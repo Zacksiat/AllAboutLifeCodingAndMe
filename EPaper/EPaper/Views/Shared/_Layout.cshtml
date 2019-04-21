@@ -8,6 +8,7 @@
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -42,9 +43,9 @@
                 </li>
                 @if (this.User.IsInRole("Admin"))
                 {
-                    <li><a asp-area="" asp-controller="Home" asp-action="AdminIndex">Administration</a></li>
+                    <li style="padding-top: 2.5%!important;"><a asp-area="" asp-controller="Home" asp-action="AdminIndex">Administration</a></li>
                 }
-                </ul>
+            </ul>
         </div>
 
 
@@ -58,68 +59,58 @@
 
     <partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
+    <div class="body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <div class="flex sitemap row">
-                <div class="text-left">
-                    <h4 class="font-weight-light">Top Categories</h4>
-                    <div class="menu-%ce%ba%ce%b1%cf%84%ce%b7%ce%b3%ce%bf%cf%81%ce%af%ce%b5%cf%82-%cf%83%cf%84%ce%bf-footer-container">
-                        <ul id="menu-%ce%ba%ce%b1%cf%84%ce%b7%ce%b3%ce%bf%cf%81%ce%af%ce%b5%cf%82-%cf%83%cf%84%ce%bf-footer" class="menu">
 
-                            <li class="font-weight-light"><a href="">Books</a></li>
-                            <li class="font-weight-light"><a href="">Magazines</a></li>
-                            <li class="font-weight-light"><a href="">Comics</a></li>
-                            <li class="font-weight-light"><a href="">CDs</a></li>
-
-
-                        </ul>
+      
+        <div class="row footer-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h4>Top Categories</h4>
+                        <dd><a href="#">Books</a></dd>
+                        <dd><a href="#">Magazines</a></dd>
+                        <dd><a href="#">Comics</a></dd>
+                        <dd><a href="#">CDs</a></dd>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4>Shop</h4>
+                        <dd><i class="fa fa-map-marker"></i> Monday - Friday: 11:00 - 20:00</dd>
+                        <dd><i class="fa fa-location-arrow"></i> Aisxilou 7 Athens Greece</dd>
+                        <dd><i class="fa fa-phone"></i> 2101234567</dd>
+                        <dd><i class="fa fa fa-envelope"></i><a href="info@epaper.com"> info@epaper.com</a></dd>
+                    </div>
+                    <div class="col-sm-4">
+                        <h4>EPaper</h4>
+                        <dd><a href="https://localhost:44303/Home/About">About Us</a></dd>
+                        <dd><a href="https://localhost:44303/Home/Contact">Contact</a></dd>
                     </div>
                 </div>
-
-                <div class="text-center">
-                    <h4 class="font-weight-light">Shop</h4>
-                    <ul>
-                        <li class="font-weight-light">Monday - Friday: 11:00 - 20:00</li>
-                        <li class="font-weight-light">Aisxilou 7</li>
-                        <li class="font-weight-light">Athens Greece</li>
-                        <li class="font-weight-light">Phone: 2100000</li>
-                        <li class="font-weight-light">Email: <a href="hello@epaper.com">hello@epaper.com</a></li>
-                    </ul>
-                </div>
-                <div class="text-right">
-                    <h4 class="font-weight-light">Epaper</h4>
-                    <ul>
-                        <li class="font-weight-light"><a href="https://localhost:44303/Home/About">About Us</a></li>
-                        <li class="font-weight-light"><a href="https://localhost:44303/Home/Contact">Contact</a></li>
-                    </ul>
-                </div>
             </div>
-        </footer>
+        </div>
 
-    </div>
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
 
-    @RenderSection("Scripts", required: false)
+            <environment include="Development">
+                <script src="~/lib/jquery/dist/jquery.js"></script>
+                <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+                <script src="~/js/site.js" asp-append-version="true"></script>
+            </environment>
+            <environment exclude="Development">
+                <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                        asp-fallback-test="window.jQuery"
+                        crossorigin="anonymous"
+                        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+                </script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                        asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                        asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                        crossorigin="anonymous"
+                        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+                </script>
+                <script src="~/js/site.min.js" asp-append-version="true"></script>
+            </environment>
+
+            @RenderSection("Scripts", required: false)
 </body>
 </html>
