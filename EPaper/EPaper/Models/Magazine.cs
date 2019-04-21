@@ -15,8 +15,8 @@ namespace EPaper.Models
         public int ProductId { get; set; }
 
         public string Publisher { get; set; }
-
-        public string Genre { get; set; }
+        //add category to magazines(p.x. comic)
+        public string Category { get; set; }
 
         public int Pages { get; set; }
 
