@@ -55,7 +55,7 @@ namespace EPaper
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-               // ApplicationDbInitializer.SeedUsers(userManager);
+                ApplicationDbInitializer.SeedUsers(userManager);
             }
             else
             {
