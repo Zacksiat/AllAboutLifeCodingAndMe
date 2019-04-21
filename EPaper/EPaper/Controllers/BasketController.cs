@@ -29,19 +29,21 @@ namespace EPaper.Controllers
         /// <returns></returns>
         public IActionResult Index(string i)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var tempUserID = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var tempUserID = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                IEnumerable<BasketProduct> result = new List<BasketProduct>();
+                result = _context.BasketProducts
 
-            IEnumerable<BasketProduct> result = new List<BasketProduct>();
-            result = _context.BasketProducts
-
-                .Include(bp => bp.Basket)
-                .Include(bp => bp.Product)
-                .Where(bp => bp.Basket.ApplicationUserId == tempUserID).ToList();
-            //if (result.Count() == 0)
-            //    return NotFound();
-            //else
-            return View(result);
+                    .Include(bp => bp.Basket)
+                    .Include(bp => bp.Product)
+                    .Where(bp => bp.Basket.ApplicationUserId == tempUserID).ToList();
+                
+                return View(result);
+            }
+            return RedirectToAction("Index","Home");
+           
 
         }
         /// <summary>
