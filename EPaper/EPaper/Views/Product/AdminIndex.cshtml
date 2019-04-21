@@ -22,9 +22,12 @@
         </div>
     </ul>
 </div>
-<table class="table">
-    <thead>
-        <tr>
+
+<br/>
+<div>
+    <table class="table table-striped border">
+    <tr class="table-info">
+
             <th>
                 @Html.DisplayNameFor(model => model.Name)
 
@@ -35,11 +38,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-
-
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(m => m.Available)
+            </th>
         </tr>
-    </thead>
+    
     <tbody>
         @foreach (var item in Model)
 
@@ -70,4 +73,5 @@
             </tr>
         }
     </tbody>
-</table>
+   </table>
+</div>
