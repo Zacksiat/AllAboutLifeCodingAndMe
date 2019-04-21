@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using EPaper.Models;
+using ESHOPFORCODINGSCHOOL.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace EPaper.Controllers
+namespace ESHOPFORCODINGSCHOOL.Controllers
 {
     public class HomeController : Controller
     {
@@ -38,6 +39,14 @@ namespace EPaper.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        ///////////////////////ADMIN ////////////////////////////////
+        [Authorize(Roles = "Admin")]
+        [HttpGet("/Admin/Index")]
+        public IActionResult AdminIndex()
+        {
+            return View();
         }
     }
 }

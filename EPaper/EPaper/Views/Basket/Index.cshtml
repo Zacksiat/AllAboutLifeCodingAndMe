@@ -1,0 +1,44 @@
+﻿@model IList<ESHOPFORCODINGSCHOOL.Models.BasketWithName>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Hello @User.Identity.Name</h2>
+<h3>You have the following items in your cart</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model[0].ProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Quantity)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+
+
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<form asp-action="CheckOut">
+    <input type="submit" value="CheckOut" class="btn btn-default" /> |
+    <a asp-action="Index">Back to List</a>
+</form>

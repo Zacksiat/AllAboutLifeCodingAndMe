@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ESHOPFORCODINGSCHOOL.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "AdminIndex";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>AdminIndex</h2>
+<div class="dropdown">
+   <ul>
+        <li><a asp-controller="Role" asp-action="RegisterRole">RegisterRole</a></li>
+    </ul>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+
+            </th>
+        
+
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+
+        {
+          
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+       
+
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,6 +1,6 @@
 using System;
 
-namespace EPaper.Models
+namespace ESHOPFORCODINGSCHOOL.Models
 {
     public class ErrorViewModel
     {

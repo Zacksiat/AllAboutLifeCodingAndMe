@@ -1,0 +1,26 @@
+﻿@model ESHOPFORCODINGSCHOOL.Models.UserRoles
+@{
+    ViewData["Title"] = "RegisterRole";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Register Role</h2>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RegisterRole">
+            <div class="form-group">
+                <label asp-for="Users.Id" class="control-label"></label>
+                <select asp-for="Users.Id" class="form-control" asp-items="ViewBag.Users"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Roles.Id" class="control-label"></label>
+                <select asp-for="Roles.Id" class="form-control" asp-items="ViewBag.Roles"></select>
+            </div>
+
+
+            <input type="submit" />
+
+
+        </form>
+    </div>
+
