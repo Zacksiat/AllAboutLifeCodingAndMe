@@ -90,7 +90,7 @@ namespace EPaper.Data
             });
         }
     }
-   /* public static class ApplicationDbInitializer
+    public static class ApplicationDbInitializer
     {
         public static void SeedUsers(UserManager<ApplicationUser> userManager)
         {
@@ -110,6 +110,6 @@ namespace EPaper.Data
                 }
             }
         }
-    }*/
+    }
 }
 
