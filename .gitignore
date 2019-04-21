@@ -259,14 +259,8 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-<<<<<<< HEAD
-/EPaper/EPaper/Migrations/ApplicationDbContextModelSnapshot.cs
-/EPaper/EPaper/Migrations/20190421094149_Initial.Designer.cs
-/EPaper/EPaper/Migrations/20190421094149_Initial.cs
-=======
 /EPaper/EPaper/Migrations
 *.pyc
 /EPaper/EPaper/Migrations/ApplicationDbContextModelSnapshot.cs
 /EPaper/EPaper/Migrations/20190421094145_Initial.Designer.cs
 /EPaper/EPaper/Migrations/20190421094145_Initial.cs
->>>>>>> 38248a53573bcb9da037f1d6237cac369d892311
