@@ -260,3 +260,7 @@ paket-files/
 __pycache__/
 *.pyc
 /EPaper/EPaper/Migrations
+*.pyc
+/EPaper/EPaper/Migrations/ApplicationDbContextModelSnapshot.cs
+/EPaper/EPaper/Migrations/20190421094145_Initial.Designer.cs
+/EPaper/EPaper/Migrations/20190421094145_Initial.cs
