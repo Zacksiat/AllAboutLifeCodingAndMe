@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ESHOPFORCODINGSCHOOL.Models;
+using EPaper.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ESHOPFORCODINGSCHOOL.Controllers
+namespace EPaper.Controllers
 {
     public class HomeController : Controller
     {

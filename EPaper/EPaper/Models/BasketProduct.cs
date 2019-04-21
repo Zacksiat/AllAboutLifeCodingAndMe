@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ESHOPFORCODINGSCHOOL.Models
+namespace EPaper.Models
 {
     public class BasketProduct
     {

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using ESHOPFORCODINGSCHOOL.Models;
+using EPaper.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESHOPFORCODINGSCHOOL.Data
+namespace EPaper.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

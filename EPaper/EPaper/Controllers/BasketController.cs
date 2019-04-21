@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ESHOPFORCODINGSCHOOL.Data;
-using ESHOPFORCODINGSCHOOL.Models;
+using EPaper.Data;
+using EPaper.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESHOPFORCODINGSCHOOL.Controllers
+namespace EPaper.Controllers
 {
     public class BasketController : Controller
     {

@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ESHOPFORCODINGSCHOOL.Data;
+using EPaper.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ESHOPFORCODINGSCHOOL.Models;
+using EPaper.Models;
 
-namespace ESHOPFORCODINGSCHOOL
+namespace EPaper
 {
     public class Startup
     {
