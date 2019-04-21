@@ -30,29 +30,19 @@ namespace EPaper.Controllers
         public IActionResult Index(string i)
         {
 
+            var tempUserID = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             IEnumerable<BasketProduct> result = new List<BasketProduct>();
-            result = _context.BasketProducts.Include(bp => bp.BasketId)
-                .Include(bp => bp.ProductId)
-                .Where(bp => bp.Basket.ApplicationUserId == User.FindFirst(ClaimTypes.NameIdentifier).Value).ToList();
+            result = _context.BasketProducts
 
-            /*     IEnumerable<BasketWithName> result = from bp in _context.BasketProducts
-                                                      join b in _context.Baskets on bp.BasketId equals b.BasketId
-                                                      join p in _context.Products on bp.ProductId equals p.ProductId
-                                                      where b.ApplicationUserId == User.FindFirst(ClaimTypes.NameIdentifier).Value
-                                                      select new BasketWithName
-                                                      {
+                .Include(bp => bp.Basket)
+                .Include(bp => bp.Product)
+                .Where(bp => bp.Basket.ApplicationUserId == tempUserID).ToList();
+            //if (result.Count() == 0)
+            //    return NotFound();
+            //else
+            return View(result);
 
-                                                          ProductName = p.Name,
-                                                          ProductId = bp.ProductId,
-                                                          Quantity = bp.Quantity
-                                                      };
-                                                      */
-            /*    ViewData["Result"] = _context.BasketProducts.Include(bp => bp.BasketId)
-                    .Include(bp => bp.ProductId)
-                    .Where(bp => bp.Basket.ApplicationUserId == User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                    */
-            return View(result.ToList());
         }
         /// <summary>
         /// 

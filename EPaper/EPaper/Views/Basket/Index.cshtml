@@ -1,4 +1,4 @@
-﻿@model IList<EPaper.Models.BasketWithName>
+﻿@model IList<EPaper.Models.BasketProduct>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,7 +10,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model[0].ProductName)
+                @Html.DisplayNameFor(model => model[0].Basket.ApplicationUser)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model[0].Quantity)
@@ -24,7 +24,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductName)
+                    @Html.DisplayFor(modelItem => item.Product.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
