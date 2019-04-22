@@ -14,15 +14,23 @@ namespace EPaper.Controllers
     public class BookController : Controller
     {
         private readonly ApplicationDbContext _context;
+       
+        
 
         public BookController(ApplicationDbContext context)
         {
             _context = context;
+            
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> BookIndex()
         {
-            return View();
+
+            var applicationDbContext = _context.Books;
+            return View(await applicationDbContext.ToListAsync());
         }
+
+       
 
         //GET:/Book/Create
         [Authorize(Roles = "Admin")]
