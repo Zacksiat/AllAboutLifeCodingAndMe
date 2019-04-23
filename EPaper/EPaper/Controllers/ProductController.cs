@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EPaper.Data;
 using EPaper.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,13 @@ namespace EPaper.Models
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
+        
+
 
         public ProductController(ApplicationDbContext context)
         {
             _context = context;
+          
         }
 
         public IActionResult Index()

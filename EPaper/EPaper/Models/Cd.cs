@@ -14,8 +14,9 @@ namespace EPaper.Models
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
-        public string Genre { get; set; }
+        public string Category { get; set; }
         public string Artist { get; set; }
+        //diskografiki
         public string Label { get; set; }
         public int NumberOfSongs { get; set; }
 
