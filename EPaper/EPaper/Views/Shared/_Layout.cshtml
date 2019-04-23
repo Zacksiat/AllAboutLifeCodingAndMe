@@ -6,9 +6,9 @@
     <title>@ViewData["Title"] - EPaper</title>
 
     <environment include="Development">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
-        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -45,11 +45,11 @@
                 {
                     <li style="padding-top: 2.5%!important;"><a asp-area="" asp-controller="Home" asp-action="AdminIndex">Administration</a></li>
                 }
-                
+
             </ul>
         </div>
 
-
+        <i class="fa fa-cart-plus"></i>
 
         <div>
             <partial name="_LoginPartial" />
