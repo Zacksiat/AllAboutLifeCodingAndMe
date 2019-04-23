@@ -1569,7 +1569,7 @@ $.extend( $.validator, {
 var pendingRequests = {},
 	ajax;
 
-// Use a prefilter if available (1.5+)
+// Use a prefilter if Stock (1.5+)
 if ( $.ajaxPrefilter ) {
 	$.ajaxPrefilter( function( settings, _, xhr ) {
 		var port = settings.port;
