@@ -22,7 +22,6 @@ namespace EPaper.Models
         public ProductController(ApplicationDbContext context)
         {
             _context = context;
-            //ProductsVM = new ProductsViewModel()
             {
                 //Type = _context.Type.ToList(),
 
