@@ -24,7 +24,7 @@ namespace EPaper.Models
         public IActionResult Index()
         {
             var books = _context.Books.ToList();
-            books.Add(new Book() {Name = "Shrek" });
+            books.Add(new Book() { Name = "Shrek" });
             return View(books);
         }
 
