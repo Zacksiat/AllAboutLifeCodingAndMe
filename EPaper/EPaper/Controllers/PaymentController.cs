@@ -26,6 +26,8 @@ namespace EPaper.Models
         }
 
         // POST :/Payment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PaymentMethod,Orders.Address")]Payment payment)
         {
             if (ModelState.IsValid)
