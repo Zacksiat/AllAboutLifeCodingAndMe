@@ -8,6 +8,8 @@ using EPaper.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using EPaper.Helpers;
 
 namespace EPaper.Models
 {
@@ -26,16 +28,35 @@ namespace EPaper.Models
             if (User.Identity.IsAuthenticated)
             {
                 string userId = GetUserId();
-                IEnumerable<Cart> carts = _context.Carts
+                List<Cart> carts = _context.Carts
                     .Include(p => p.Product)
                     .Where(c => c.UserId == userId && c.OrderId == null)
                     .ToList();
+                carts.Add(new Cart() { Quantity = 2 });
+                if (carts != null)
+                {
+                    return View(carts);
+                }
+                else
+                {
+                    return View();
+                }
 
-                return View(carts);
             }
-            return RedirectToAction("Index", "Home");
-
-
+            else
+            {
+                List<Item> cart = new List<Item>();
+                cart.Add(new Item { Quantity = 10 });
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+                ViewBag.cart = cart;
+             /*   if (cart != null)
+                {
+                    ViewBag.total = cart.Sum(item => item.Product.Price * item.Quantity);
+                } */
+                cart.Add(new Item() { Quantity = 10 });
+                return View();
+            }
         }
 
         [HttpGet]
@@ -83,6 +104,31 @@ namespace EPaper.Models
                     _context.Carts.Add(cart);
                 }
                 await _context.SaveChangesAsync();
+            }
+            else
+            {
+                //Product product = new Product();
+                if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
+                {
+                    List<Item> cart = new List<Item>();
+                    cart.Add(new Item { Product = _context.Products.Find(product.ProductId), Quantity = 1 });
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                }
+                else
+                {
+                    List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+                    int index = isExist(product.ProductId);
+                    if (index != -1)
+                    {
+                        cart[index].Quantity++;
+                    }
+                    else
+                    {
+                        cart.Add(new Item { Product = _context.Products.Find(product.ProductId), Quantity = 1 });
+                    }
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                }
+                return RedirectToAction("Index");
             }
             return RedirectToAction("Index", "Products");
         }
@@ -142,11 +188,12 @@ namespace EPaper.Models
         public IActionResult CheckOut()
         {
             if (User.Identity.IsAuthenticated)
+
+
             {
-                RedirectToAction("Create", "Payment");
+                return RedirectToAction("Create", "Payment");
 
             }
-
             return NotFound();
         }
 
@@ -159,11 +206,23 @@ namespace EPaper.Models
         private Cart ProductIsInCart(int? id)
         {
             string userId = GetUserId();
-            var product =  _context.Carts
+            var product = _context.Carts
               .FirstOrDefault(i => i.ProductId == id
                                 && i.UserId == userId
                                 && i.OrderId == null);
             return product;
+        }
+        private int isExist(int id)
+        {
+            List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+            for (int i = 0; i < cart.Count; i++)
+            {
+                if (cart[i].Product.ProductId.Equals(id))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
