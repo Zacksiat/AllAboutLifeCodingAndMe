@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace EPaper.Controllers
+namespace EPaper.Models
 {
     public class ProductController : Controller
     {

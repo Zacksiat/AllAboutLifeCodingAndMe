@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EPaper.Controllers
+namespace EPaper.Models
 {
     public class MagazineController : Controller
     {

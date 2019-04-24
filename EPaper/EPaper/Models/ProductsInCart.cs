@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace EPaper.Models
 {
-    public class BasketWithName : BasketProduct
+    public class ProductsInCart
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
 
-        public string ProductName { get; set; }
+        public int Quantity { get; set; }
     }
 }

@@ -10,9 +10,6 @@ namespace EPaper.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Basket> Baskets { get; set; }
-
-        public DbSet<BasketProduct> BasketProducts { get; set; }
 
         public DbSet<Book> Books { get; set; }
 
@@ -22,11 +19,11 @@ namespace EPaper.Data
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<OrderProduct> OrderProducts { get; set; }
-
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<Cart> Carts { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
@@ -44,21 +41,53 @@ namespace EPaper.Data
                 entity.HasData(new IdentityRole { Name = "Admin", NormalizedName = "Admin".ToUpper() });
                 entity.HasData(new IdentityRole { Name = "User", NormalizedName = "User".ToUpper() });
             });
-           
 
-            builder.Entity<OrderProduct>().HasKey(op => new { op.ProductId, op.OrderId });
+            builder.Entity<Payment>(entity =>
+            {
+                entity.HasOne(p => p.ApplicationUser)
+                .WithMany(p => p.Payments)
+                .HasForeignKey(p => p.UserId)
+                .IsRequired();
+                entity.Property(p => p.PaymentMethod).IsRequired();
+            });
 
-            builder.Entity<BasketProduct>().HasKey(bp => new { bp.BasketId, bp.ProductId });
+
+            builder.Entity<Cart>().HasOne(x => x.ApplicationUser)
+                .WithMany(c => c.Carts)
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
+            builder.Entity<Cart>().HasOne(x => x.Product);
+            builder.Entity<Cart>().HasOne(o => o.Order);
+            builder.Entity<Cart>().Property(x => x.Quantity).IsRequired();
+            builder.Entity<Cart>().HasKey(o => o.Id);
+
+
+            builder.Entity<Order>(entity =>
+            {
+                entity.HasOne(p => p.Payment)
+                     .WithOne(p => p.Order)
+                     .HasForeignKey<Payment>(o => o.Id);
+                // entity.HasKey(k => k.PaymentId);
+                entity.HasKey(p => p.PaymentId);
+                entity.HasOne(u => u.ApplicationUser)
+                .WithMany(o => o.Orders)
+                .HasForeignKey(u => u.ApplicationUserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.Property(u => u.Address).IsRequired();
+
+            });
+
+
 
             builder.Entity<Product>(entity =>
             {
                 entity.Property(p => p.Type).IsRequired();
                 entity.Property(p => p.Name).IsRequired();
             });
-            builder.Entity<Order>(entity =>
-            {
-                entity.Property(o => o.ApplicationUserId).IsRequired();
-            });
+
 
             builder.Entity<Magazine>(entity =>
             {
@@ -84,10 +113,7 @@ namespace EPaper.Data
                 .Ignore(b => b.Name)
                 .Ignore(b => b.Price);
             });
-            builder.Entity<Basket>(entity =>
-            {
-                entity.Property(b => b.ApplicationUserId).IsRequired();
-            });
+
         }
     }
     public static class ApplicationDbInitializer
@@ -102,11 +128,11 @@ namespace EPaper.Data
                     Email = "asdf@gmail.com"
                 };
 
-                IdentityResult result = userManager.CreateAsync(user,"Asdf1234!").Result;
+                IdentityResult result = userManager.CreateAsync(user, "Asdf1234!").Result;
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user,"Admin").Wait();
+                    userManager.AddToRoleAsync(user, "Admin").Wait();
                 }
             }
         }
