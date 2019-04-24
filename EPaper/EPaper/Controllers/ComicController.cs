@@ -8,24 +8,25 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EPaper.Models
+namespace EPaper.Controllers
 {
-    public class MagazineController : Controller
+    public class ComicController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MagazineController(ApplicationDbContext context)
+        public ComicController(ApplicationDbContext context)
         {
             _context = context;
         }
+
         public IActionResult Index()
         {
-            var magazines = _context.Magazines.ToList();
-            magazines.Add(new Magazine() { Name = "MADAM FIGARO FIGARO FIGAROOOOOOOOO" });
-            return View(magazines);
+            var comics = _context.Comics.ToList();
+            comics.Add(new Comic() { Name = "ZORO" });
+            return View(comics);
         }
 
-        //GET:/Magazine/Create
+        //GET:/Comic/Create
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
@@ -33,62 +34,60 @@ namespace EPaper.Models
             return View();
         }
 
-        // POST:/Magazine/Create
+        // POST:/Comic/Create
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Genre,Publisher,DatePublished,Pages,Issue,Name,Price")]Magazine magazine)
+        public async Task<IActionResult> Create([Bind("Author,Label,Name,Price")]Comic comic)
         {
             if (ModelState.IsValid)
             {
 
                 Product product = new Product
                 {
-                    Type = "Magazine",
-                    Name = magazine.Name,
-                    Price = magazine.Price
+                    Type = "Comic",
+                    Name = comic.Name,
+                    Price = comic.Price
                 };
                 await _context.AddAsync(product);
-                magazine.ProductId = product.ProductId;
-                await _context.AddAsync(magazine);
+                comic.ProductId = product.ProductId;
+                await _context.AddAsync(comic);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("AdminIndex", "Product");
             }
 
-            return View(magazine);
+            return View(comic);
         }
 
-        //GET:/Magazine/Edit/5
+        //GET:/Comic/Edit/5
         [Authorize(Roles = "Admin")]
         public IActionResult Edit(Product product)
         {
-            var magazine = _context.Magazines.Find(product.ProductId);
-            return View(magazine);
+            var comic = _context.Comics.Find(product.ProductId);
+            return View(comic);
         }
 
-        // POST:/Magazine/Edit/4
+        // POST:/Comic/Edit/4
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Publisher,DatePublished,Pages,Issue,Name,Price")]Magazine magazine)
+        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Name,Price")]Comic comic)
         {
-
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Product product = _context.Products.Find(magazine.ProductId);
-                    product.Price = magazine.Price;
-                    product.Name = magazine.Name;
-                    _context.Update(magazine);
+                    Product product = _context.Products.Find(comic.ProductId);
+                    product.Price = comic.Price;
+                    product.Name = comic.Name;
+                    _context.Update(comic);
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MagazineExists(magazine.ProductId))
+                    if (!ComicExists(comic.ProductId))
                     {
                         return NotFound();
                     }
@@ -99,10 +98,10 @@ namespace EPaper.Models
                 }
                 return RedirectToAction("AdminIndex", "Product");
             }
-            return View(magazine);
+            return View(comic);
         }
 
-        private bool MagazineExists(int id)
+        private bool ComicExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
         }

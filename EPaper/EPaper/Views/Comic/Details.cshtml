@@ -1,0 +1,99 @@
+﻿
+@model EPaper.Models.Comic
+@*
+    @using EPaper.Extensions
+*@
+
+
+<br />
+<h2 class="text-info">Comic Details</h2>
+
+<div class="p-4 border rounded row">
+
+
+    <div class="col-8">
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Name"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Name" readonly class="form-control" />
+            </div>
+
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Category"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Category" class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Price"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Price" readonly class="form-control" />
+            </div>
+
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Author"></label>
+            </div>
+            <div class="col-5">
+                <input asp-for="Author" class="form-control" />
+            </div>
+        </div>
+
+        @*Gia to ProductTypes *@
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Product.Name" readonly class="form-control" />
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Product.Stock"></label>
+            </div>
+            <div class="col-8">
+                <input type="checkbox" readonly class="form-control" asp-for="Product.Stock" />
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-1">
+
+    </div>
+
+    @*Image*@
+    <div class="col-3">
+        <img src="Product.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9;" />
+    </div>
+
+    <br />
+    <div class="form-group">
+        <a asp-action="Edit" class="btn btn-primary" asp-route-id="Product.ProductId">Edit</a>
+        <a asp-action="Index" class="btn btn-success">Back to List</a>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+

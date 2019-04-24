@@ -1,0 +1,14 @@
+﻿@model List<EPaper.Models.Magazine>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>MAGAZINES - ΠΕΡΙΟΔΙΚΑ</h2>
+
+
+@foreach (var mag in Model)
+{
+    <h4>@mag.Name</h4>
+}
+

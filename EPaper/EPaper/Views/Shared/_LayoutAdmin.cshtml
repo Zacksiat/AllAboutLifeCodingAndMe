@@ -18,36 +18,12 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="AdminIndex">Admin</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
-
-                <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                <li class="nav-item"><a class="nav-link" role="button" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                <li class="dropdown">
-                    <a class="nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Product
-                    </a>
-
-                    <div class="dropdown-menu" aria-labelledby="Products">
-                        <a class="dropdown-item" href="">Books</a>
-                        <a class="dropdown-item" href="">Magazines</a>
-                        <a class="dropdown-item" href="">Comics</a>
-                        <a class="dropdown-item" href="">CDs</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        @*<div class="navbar-collapse collapse">*@
-
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Epaper</a>
+        <a class="collapse navbar-collapse" style="padding-top: 0.2% !important;" asp-area="" asp-controller="Home" asp-action="AdminIndex">Administration</a>
         <partial name="_LoginPartial" />
-        </div>
-
+        <partial name="_CookieConsentPartial" />
     </nav>
 
-    <partial name="_CookieConsentPartial" />
 
     <div class="container body-content">
         @RenderBody()

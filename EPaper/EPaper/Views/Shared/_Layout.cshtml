@@ -26,24 +26,22 @@
                 <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                 <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                 <li class="nav-item"><a class="nav-link" role="button" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-
-
                 <li class="dropdown">
                     <a class="nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Product
                     </a>
 
                     <div class="dropdown-menu" aria-labelledby="Products">
-                        <a class="dropdown-item" href="">Books</a>
-                        <a class="dropdown-item" href="">Magazines</a>
-                        <a class="dropdown-item" href="">Comics</a>
-                        <a class="dropdown-item" href="">CDs</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Book" asp-action="Index">Books</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Magazine" asp-action="Index">Magazines</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Comic" asp-action="Index">Comics</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Cd" asp-action="Index">CDs</a>
                     </div>
 
                 </li>
                 @if (this.User.IsInRole("Admin"))
                 {
-                    <li style="padding-top: 2.5%!important;"><a asp-area="" asp-controller="Home" asp-action="AdminIndex">Administration</a></li>
+                    <li style="padding-top: 2.3%!important;padding-left:1%!important;"><a asp-area="" asp-controller="Home" asp-action="AdminIndex">Administration</a></li>
                 }
 
             </ul>

@@ -23,7 +23,9 @@ namespace EPaper.Models
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            var books = _context.Books.ToList();
+            books.Add(new Book() {Name = "Shrek" });
+            return View(books);
         }
 
         //GET:/Book/Create
