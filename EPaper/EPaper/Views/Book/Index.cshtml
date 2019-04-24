@@ -1,0 +1,15 @@
+﻿@model List<EPaper.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>BOOKS - ΒΙΒΛΙΑ</h2>
+
+
+@foreach (var book in Model)
+{
+    <h4>@book.Name</h4>
+}
+
+
