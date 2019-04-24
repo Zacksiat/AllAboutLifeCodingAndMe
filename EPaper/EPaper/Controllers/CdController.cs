@@ -26,7 +26,7 @@ namespace EPaper.Models
             cds.Add(new Cd() { Name = "TERLEGKAS" });
             return View(cds);
         }
-
+        //Index gia to cd
         public async Task<IActionResult> CdIndex()
         {
 
