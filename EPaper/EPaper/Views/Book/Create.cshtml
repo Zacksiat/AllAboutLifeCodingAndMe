@@ -94,11 +94,11 @@
                 <label asp-for="Product.Available"></label>
             </div>
             <div class="col-5">
-                <input type="checkbox" asp-for="Product.Available" />
+                <input asp-for="Product.Available" class="form-control" />
             </div>
-
+            <span asp-validation-for="Product.Available" class="text-danger"></span>
         </div>
-
+        
 
 
 
@@ -106,7 +106,7 @@
         <div class="form-group">
             <input type="submit" class="btn btn-primary" value="Create" />
             <a asp-action="BookIndex" class="btn btn-success">Back to List</a>
-           @* <a asp-action="BookIndex" class="btn btn-success">Back to List</a> *@
+            @* <a asp-action="BookIndex" class="btn btn-success">Back to List</a> *@
         </div>
     </div>
 </form>

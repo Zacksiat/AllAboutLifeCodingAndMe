@@ -1,11 +1,11 @@
-﻿
+﻿@model List<EPaper.Models.Cart>
 @{
-    ViewData["Title"] = "Index";
+    ViewBag.Title = "Index";
 }
 
 <h2>Index</h2>
 
-<div class="container">
+<div>
     <table id="cart" class="table table-hover table-condensed">
         <thead>
             <tr>
@@ -28,9 +28,26 @@
                     </div>
                 </td>
                 <td data-th="Price">$1.99</td>
-                <td data-th="Quantity">
-                    <input type="number" class="form-control text-center" value="1">
-                </td>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    @foreach (var q in ViewBag.cart)
+                    {
+                        <td data-th="Quantity">
+                            <input type="number" class="form-control text-center" value="@q.Quantity">
+                        </td>
+                    }
+                }
+                else
+                {
+                    @foreach (var q in Model)
+                    {
+                        <td data-th="Quantity">
+                            <input type="number" class="form-control text-center" value="@q.Quantity">
+                        </td>
+                    }
+                }
+
+
                 <td data-th="Subtotal" class="text-center">1.99</td>
                 <td class="actions" data-th="">
                     <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
@@ -46,7 +63,7 @@
                 <td><a href="#" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                 <td colspan="2" class="hidden-xs"></td>
                 <td class="hidden-xs text-center"><strong>Total $1.99</strong></td>
-                <td><a href="#" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
+                <td><a class="btn btn-success btn-block" asp-area="" asp-controller="Cart" asp-action="CheckOut">Checkout</a> <i class="fa fa-angle-right"></i></></td>
             </tr>
         </tfoot>
     </table>

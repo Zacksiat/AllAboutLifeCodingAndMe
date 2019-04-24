@@ -20,9 +20,17 @@ namespace EPaper.Models
         }
         public IActionResult Index()
         {
-            return View();
+            var magazines = _context.Magazines.ToList();
+            magazines.Add(new Magazine() { Name = "MADAM FIGARO FIGARO FIGAROOOOOOOOO" });
+            return View(magazines);
         }
 
+        public async Task<IActionResult> MagazineIndex()
+        {
+
+            var applicationDbContext = _context.Magazines;
+            return View(await applicationDbContext.ToListAsync());
+        }
         //GET:/Magazine/Create
         [Authorize(Roles = "Admin")]
         public IActionResult Create()

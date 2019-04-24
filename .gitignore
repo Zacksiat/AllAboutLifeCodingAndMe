@@ -264,3 +264,4 @@ __pycache__/
 /EPaper/EPaper/Migrations/ApplicationDbContextModelSnapshot.cs
 /EPaper/EPaper/Migrations/20190421094145_Initial.Designer.cs
 /EPaper/EPaper/Migrations/20190421094145_Initial.cs
+/EPaper/EPaper/Models/ProductsViewModel.cs

@@ -22,7 +22,16 @@ namespace EPaper.Models
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            var cds = _context.Cds.ToList();
+            cds.Add(new Cd() { Name = "TERLEGKAS" });
+            return View(cds);
+        }
+
+        public async Task<IActionResult> CdIndex()
+        {
+
+            var applicationDbContext = _context.Cds;
+            return View(await applicationDbContext.ToListAsync());
         }
 
         //GET:/Cd/Create

@@ -16,7 +16,7 @@ namespace EPaper.Models
         public int? Stock { get; set; }
         public ICollection<Cart> Carts { get; set; }
         public string Image { get; set; }
-        public string Available { get; set; }
+        public int Available { get; set; }
     }
 
     

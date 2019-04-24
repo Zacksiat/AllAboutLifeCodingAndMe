@@ -6,37 +6,34 @@ using EPaper.Data;
 using EPaper.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace EPaper.Models
+namespace EPaper.Controllers
 {
-    [Authorize(Roles ="Admin")]
-    public class BookController : Controller
+    public class ComicController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public BookController(ApplicationDbContext context)
+        public ComicController(ApplicationDbContext context)
         {
             _context = context;
         }
-        [AllowAnonymous]
+
         public IActionResult Index()
         {
-            var books = _context.Books.ToList();
-            books.Add(new Book() { Name = "Shrek" });
-            return View(books);
+            var comics = _context.Comics.ToList();
+            comics.Add(new Comic() { Name = "ZORO" });
+            return View(comics);
         }
 
-
-        public async Task<IActionResult> BookIndex()
+        public async Task<IActionResult> ComicIndex()
         {
 
-            var applicationDbContext = _context.Books;
+            var applicationDbContext = _context.Comics;
             return View(await applicationDbContext.ToListAsync());
         }
 
-        //GET:/Book/Create
+        //GET:/Comic/Create
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
@@ -44,62 +41,60 @@ namespace EPaper.Models
             return View();
         }
 
-        // POST:/Book/Create
+        // POST:/Comic/Create
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        public async Task<IActionResult> Create([Bind("Author,Label,Name,Price")]Comic comic)
         {
             if (ModelState.IsValid)
             {
 
                 Product product = new Product
                 {
-                    Type = "Book",
-                    Name = book.Name,
-                    Price = book.Price
+                    Type = "Comic",
+                    Name = comic.Name,
+                    Price = comic.Price
                 };
                 await _context.AddAsync(product);
-                book.ProductId = product.ProductId;
-                await _context.AddAsync(book);
+                comic.ProductId = product.ProductId;
+                await _context.AddAsync(comic);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("AdminIndex", "Product");
             }
 
-            return View(book);
+            return View(comic);
         }
 
-        //GET:/Book/Edit/5
+        //GET:/Comic/Edit/5
         [Authorize(Roles = "Admin")]
         public IActionResult Edit(Product product)
         {
-            var book = _context.Books.Find(product.ProductId);
-            return View(book);
+            var comic = _context.Comics.Find(product.ProductId);
+            return View(comic);
         }
 
-        // POST:/Book/Edit/4
+        // POST:/Comic/Edit/4
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Name,Price")]Comic comic)
         {
-          
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Product product =  _context.Products.Find(book.ProductId);
-                    product.Price = book.Price;
-                    product.Name = book.Name;
-                    _context.Update(book);
+                    Product product = _context.Products.Find(comic.ProductId);
+                    product.Price = comic.Price;
+                    product.Name = comic.Name;
+                    _context.Update(comic);
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.ProductId))
+                    if (!ComicExists(comic.ProductId))
                     {
                         return NotFound();
                     }
@@ -108,12 +103,12 @@ namespace EPaper.Models
                         throw;
                     }
                 }
-                return RedirectToAction("AdminIndex","Product");
+                return RedirectToAction("AdminIndex", "Product");
             }
-            return View(book);
+            return View(comic);
         }
 
-        private bool BookExists(int id)
+        private bool ComicExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
         }

@@ -17,6 +17,8 @@ namespace EPaper.Data
 
         public DbSet<Magazine> Magazines { get; set; }
 
+        public DbSet<Comic> Comics { get; set; }
+
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<Product> Products { get; set; }
@@ -26,6 +28,8 @@ namespace EPaper.Data
         public DbSet<Cart> Carts { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+        
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -106,6 +110,15 @@ namespace EPaper.Data
             });
 
             builder.Entity<Book>(entity =>
+            {
+                entity.Property(b => b.Author).IsRequired();
+                entity.Property(b => b.Publisher).IsRequired();
+                entity.Ignore(b => b.TypeName)
+                .Ignore(b => b.Name)
+                .Ignore(b => b.Price);
+            });
+
+            builder.Entity<Comic>(entity =>
             {
                 entity.Property(b => b.Author).IsRequired();
                 entity.Property(b => b.Publisher).IsRequired();
