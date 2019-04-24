@@ -1,0 +1,14 @@
+﻿@model List<EPaper.Models.Cd>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>CD - ΜΟΥΣΙΚΗ</h2>
+
+
+@foreach (var cd in Model)
+{
+    <h4>@cd.Name</h4>
+}
+

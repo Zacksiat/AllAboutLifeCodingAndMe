@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using EPaper.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace EPaper.Controllers
+namespace EPaper.Models
 {
     public class HomeController : Controller
     {

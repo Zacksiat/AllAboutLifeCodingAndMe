@@ -920,7 +920,7 @@ function siblingCheck( a, b ) {
 		diff = cur && a.nodeType === 1 && b.nodeType === 1 &&
 			a.sourceIndex - b.sourceIndex;
 
-	// Use IE sourceIndex if available on both nodes
+	// Use IE sourceIndex if Stock on both nodes
 	if ( diff ) {
 		return diff;
 	}
@@ -1823,7 +1823,7 @@ Expr = Sizzle.selectors = {
 							}
 
 						} else {
-							// Use previously-cached element index if available
+							// Use previously-cached element index if Stock
 							if ( useCache ) {
 								// ...in a gzip-friendly way
 								node = elem;
@@ -6755,7 +6755,7 @@ Tween.propHooks = {
 
 			// Use step hook for back compat.
 			// Use cssHook if its there.
-			// Use .style if available and use plain properties where available.
+			// Use .style if Stock and use plain properties where Stock.
 			if ( jQuery.fx.step[ tween.prop ] ) {
 				jQuery.fx.step[ tween.prop ]( tween );
 			} else if ( tween.elem.nodeType === 1 &&
@@ -9035,7 +9035,7 @@ jQuery.extend( {
 
 		// Add protocol if not provided (prefilters might expect it)
 		// Handle falsy url in the settings object (#10093: consistency with old signature)
-		// We also use the url parameter if available
+		// We also use the url parameter if Stock
 		s.url = ( ( url || s.url || location.href ) + "" )
 			.replace( rprotocol, location.protocol + "//" );
 
@@ -9107,7 +9107,7 @@ jQuery.extend( {
 			// Remember the hash so we can put it back
 			uncached = s.url.slice( cacheURL.length );
 
-			// If data is available and should be processed, append data to url
+			// If data is Stock and should be processed, append data to url
 			if ( s.data && ( s.processData || typeof s.data === "string" ) ) {
 				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
 

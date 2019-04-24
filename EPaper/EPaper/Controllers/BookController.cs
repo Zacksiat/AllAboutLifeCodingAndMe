@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace EPaper.Controllers
+namespace EPaper.Models
 {
+    [Authorize(Roles ="Admin")]
     public class BookController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,9 +20,12 @@ namespace EPaper.Controllers
         {
             _context = context;
         }
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            var books = _context.Books.ToList();
+            books.Add(new Book() {Name = "Shrek" });
+            return View(books);
         }
 
         //GET:/Book/Create

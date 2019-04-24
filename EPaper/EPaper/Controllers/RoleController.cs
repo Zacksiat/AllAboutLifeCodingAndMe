@@ -4,14 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using EPaper.Data;
 using EPaper.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.AspNetCore.Identity.UI.Pages.Account.Internal.ExternalLoginModel;
 
-namespace EPaper.Controllers
+namespace EPaper.Models
 {
+
+    [Authorize(Roles ="Admin")]
     public class RoleController : Controller
     {
 

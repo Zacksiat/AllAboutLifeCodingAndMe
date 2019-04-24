@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EPaper.Controllers
+namespace EPaper.Models
 {
+    [Authorize(Roles ="Admin")]
     public class CdController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -18,9 +19,12 @@ namespace EPaper.Controllers
         {
             _context = context;
         }
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            var cds = _context.Cds.ToList();
+            cds.Add(new Cd() { Name = "TERLEGKAS" });
+            return View(cds);
         }
 
         //GET:/Cd/Create
