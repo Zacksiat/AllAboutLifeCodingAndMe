@@ -18,17 +18,17 @@ namespace EPaper.Models
         {
             _context = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var magazines = _context.Magazines.ToList();
-            magazines.Add(new Magazine() { Name = "MADAM FIGARO FIGARO FIGAROOOOOOOOO" });
-            return View(magazines);
+
+            var applicationDbContext = _context.Magazines.Include(m=>m.Product);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         public async Task<IActionResult> MagazineIndex()
         {
 
-            var applicationDbContext = _context.Magazines;
+            var applicationDbContext = _context.Magazines.Include(m=>m.Product);
             return View(await applicationDbContext.ToListAsync());
         }
         //GET:/Magazine/Create
@@ -43,19 +43,13 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Genre,Publisher,DatePublished,Pages,Issue,Name,Price")]Magazine magazine)
+        public async Task<IActionResult> Create([Bind("Genre,Publisher,DatePublished,Pages,Issue,Category,Product")]Magazine magazine)
         {
             if (ModelState.IsValid)
             {
-
-                Product product = new Product
-                {
-                    Type = "Magazine",
-                    Name = magazine.Name,
-                    Price = magazine.Price
-                };
-                await _context.AddAsync(product);
-                magazine.ProductId = product.ProductId;
+                magazine.Product.Type = "Magazine";
+                await _context.AddAsync(magazine.Product);
+                magazine.ProductId = magazine.Product.ProductId;
                 await _context.AddAsync(magazine);
                 await _context.SaveChangesAsync();
 
@@ -77,7 +71,7 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Publisher,DatePublished,Pages,Issue,Name,Price")]Magazine magazine)
+        public async Task<IActionResult> Edit([Bind("Genre,Publisher,DatePublished,Pages,Issue,Product")]Magazine magazine)
         {
 
 
@@ -85,12 +79,13 @@ namespace EPaper.Models
             {
                 try
                 {
-                    Product product = _context.Products.Find(magazine.ProductId);
-                    product.Price = magazine.Price;
-                    product.Name = magazine.Name;
                     _context.Update(magazine);
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    //Product product = _context.Products.Find(magazine.ProductId);
+                    //product.Price = magazine..Price;
+                    //product.Name = magazine.Name;
+                    //_context.Update(magazine);
+                    //_context.Update(product);
+                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

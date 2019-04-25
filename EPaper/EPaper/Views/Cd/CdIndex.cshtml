@@ -20,7 +20,7 @@
             <tr class="table-info">
 
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Product.Name)
 
                 </th>
                 <th>
@@ -30,7 +30,7 @@
 
 
                 <th>
-                    @Html.DisplayNameFor(model => model.Price)
+                    @Html.DisplayNameFor(model => model.Product.Price)
                 </th>
                 @*
                 <th>
@@ -54,25 +54,25 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(m => item.Name)
+                        @Html.DisplayFor(m => item.Product.Name)
                     </td>
                     <td>
-                        @Html.DisplayNameFor(m => item.Category)
+                        @Html.DisplayFor(m => item.Category)
 
                     </td>
 
                     <td>
-                        @Html.DisplayFor(m => item.Price)
+                        @Html.DisplayFor(m => item.Product.Price)
                     </td>
                     <td>
-                        @Html.DisplayNameFor(m => item.NumberOfSongs)
+                        @Html.DisplayFor(m => item.NumberOfSongs)
                     </td>
                     <td>
-                        @Html.DisplayNameFor(m => item.Label)
+                        @Html.DisplayFor(m => item.Label)
 
                     </td>
                     <td>
-                        @Html.DisplayNameFor(mo => item.Artist)
+                        @Html.DisplayFor(mo => item.Artist)
 
                     </td>
 

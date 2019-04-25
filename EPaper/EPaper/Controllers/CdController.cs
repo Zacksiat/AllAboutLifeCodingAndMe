@@ -20,17 +20,17 @@ namespace EPaper.Models
             _context = context;
         }
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var cds = _context.Cds.ToList();
-            cds.Add(new Cd() { Name = "TERLEGKAS" });
-            return View(cds);
+
+            var applicationDbContext = _context.Cds.Include(c => c.Product);
+            return View(await applicationDbContext.ToListAsync());
         }
         //Index gia to cd
         public async Task<IActionResult> CdIndex()
         {
 
-            var applicationDbContext = _context.Cds;
+            var applicationDbContext = _context.Cds.Include(c=>c.Product);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -46,19 +46,13 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Genre,Artist,Label,NumberOfSongs,Name,Price")]Cd cd)
+        public async Task<IActionResult> Create([Bind("Genre,Artist,Label,NumberOfSongs,Product")]Cd cd)
         {
             if (ModelState.IsValid)
             {
-
-                Product product = new Product
-                {
-                    Type = "Cd",
-                    Name = cd.Name,
-                    Price = cd.Price
-                };
-                await _context.AddAsync(product);
-                cd.ProductId = product.ProductId;
+                cd.Product.Type = "Cd"; 
+                await _context.AddAsync(cd.Product);
+                cd.ProductId = cd.Product.ProductId;
                 await _context.AddAsync(cd);
                 await _context.SaveChangesAsync();
 
@@ -80,17 +74,14 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Name,Price")]Cd cd)
+        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Product")]Cd cd)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Product product = _context.Products.Find(cd.ProductId);
-                    product.Price = cd.Price;
-                    product.Name = cd.Name;
+                    
                     _context.Update(cd);
-                    _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

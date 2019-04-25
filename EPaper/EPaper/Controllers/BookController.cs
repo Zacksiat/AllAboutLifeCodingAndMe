@@ -21,18 +21,18 @@ namespace EPaper.Models
             _context = context;
         }
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var books = _context.Books.ToList();
-            books.Add(new Book() { Name = "Shrek" });
-            return View(books);
+
+            var applicationDbContext = _context.Books.Include(b => b.Product);
+            return View(await applicationDbContext.ToListAsync());
         }
 
 
         public async Task<IActionResult> BookIndex()
         {
 
-            var applicationDbContext = _context.Books;
+            var applicationDbContext = _context.Books.Include(b=>b.Product);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -48,19 +48,14 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        public async Task<IActionResult> Create([Bind("Author,Publisher,DatePublished,Pages,Category,Product")]Book book)
         {
             if (ModelState.IsValid)
             {
 
-                Product product = new Product
-                {
-                    Type = "Book",
-                    Name = book.Name,
-                    Price = book.Price
-                };
-                await _context.AddAsync(product);
-                book.ProductId = product.ProductId;
+                book.Product.Type = "Book";
+                await _context.AddAsync(book.Product);
+                book.ProductId = book.Product.ProductId;
                 await _context.AddAsync(book);
                 await _context.SaveChangesAsync();
 
@@ -90,11 +85,11 @@ namespace EPaper.Models
             {
                 try
                 {
-                    Product product =  _context.Products.Find(book.ProductId);
-                    product.Price = book.Price;
-                    product.Name = book.Name;
-                    _context.Update(book);
-                    _context.Update(product);
+                    //Product product =  _context.Products.Find(book.ProductId);
+                    //product.Price = book.Price;
+                    //product.Name = book.Name;
+                    //_context.Update(book);
+                    //_context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

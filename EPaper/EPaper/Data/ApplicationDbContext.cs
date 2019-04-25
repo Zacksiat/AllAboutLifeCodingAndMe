@@ -96,35 +96,27 @@ namespace EPaper.Data
             builder.Entity<Magazine>(entity =>
             {
                 entity.Property(m => m.Publisher).IsRequired();
-                entity.Ignore(m => m.TypeName)
-              .Ignore(m => m.Name)
-              .Ignore(m => m.Price);
+        
             });
             builder.Entity<Cd>(entity =>
             {
                 entity.Property(c => c.Artist).IsRequired();
                 entity.Property(c => c.Label).IsRequired();
-                entity.Ignore(c => c.TypeName)
-              .Ignore(c => c.Name)
-              .Ignore(c => c.Price);
+         
             });
 
+            
             builder.Entity<Book>(entity =>
             {
+               
                 entity.Property(b => b.Author).IsRequired();
-                entity.Property(b => b.Publisher).IsRequired();
-                entity.Ignore(b => b.TypeName)
-                .Ignore(b => b.Name)
-                .Ignore(b => b.Price);
+                entity.Property(b => b.Publisher).IsRequired();   
             });
 
             builder.Entity<Comic>(entity =>
             {
                 entity.Property(b => b.Author).IsRequired();
                 entity.Property(b => b.Publisher).IsRequired();
-                entity.Ignore(b => b.TypeName)
-                .Ignore(b => b.Name)
-                .Ignore(b => b.Price);
             });
 
         }

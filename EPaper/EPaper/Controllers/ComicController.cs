@@ -19,17 +19,17 @@ namespace EPaper.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var comics = _context.Comics.ToList();
-            comics.Add(new Comic() { Name = "ZORO" });
-            return View(comics);
+
+            var applicationDbContext = _context.Comics.Include(c=>c.Product);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         public async Task<IActionResult> ComicIndex()
         {
 
-            var applicationDbContext = _context.Comics;
+            var applicationDbContext = _context.Comics.Include(c=>c.Product);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -45,19 +45,13 @@ namespace EPaper.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Author,Label,Name,Price")]Comic comic)
+        public async Task<IActionResult> Create([Bind("Author,Label,Publisher,Category,Pages,Product")]Comic comic)
         {
             if (ModelState.IsValid)
             {
-
-                Product product = new Product
-                {
-                    Type = "Comic",
-                    Name = comic.Name,
-                    Price = comic.Price
-                };
-                await _context.AddAsync(product);
-                comic.ProductId = product.ProductId;
+                comic.Product.Type = "Comic";
+                await _context.AddAsync(comic.Product);
+                comic.ProductId = comic.Product.ProductId;
                 await _context.AddAsync(comic);
                 await _context.SaveChangesAsync();
 
@@ -79,17 +73,13 @@ namespace EPaper.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Name,Price")]Comic comic)
+        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Publisher,Product")]Comic comic)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Product product = _context.Products.Find(comic.ProductId);
-                    product.Price = comic.Price;
-                    product.Name = comic.Name;
                     _context.Update(comic);
-                    _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
