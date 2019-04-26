@@ -16,53 +16,79 @@
                 <th style="width:10%"></th>
             </tr>
         </thead>
+        @{ double total = 0;}
         <tbody>
-            <tr>
-                <td data-th="Product">
-                    <div class="row">
-                        <div class="col-sm-2 hidden-xs"><img src="http://placehold.it/100x100" alt="..." class="img-responsive" /></div>
-                        <div class="col-sm-10">
-                            <h4 class="nomargin">Product 1</h4>
-                            <p>Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet.</p>
+            @if (User.Identity.IsAuthenticated)
+            {
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <div class="col-lg-12">
+                            <td data-th="Product">
+
+                                <div class="row">
+                                    <div class="col-sm-2 hidden-xs"><img src="http://placehold.it/100x100" alt="..." class="img-responsive" /></div>
+                                    <div class="col-sm-10">
+                                        <h4 class="nomargin">@product.Product.Name</h4>
+                                        <p>@product.Product.Description</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-th="Price">@product.Product.Price</td>
+                            <td data-th="Quantity">
+                                <input type="number" class="form-control text-center" value="@product.Quantity">
+                            </td>
+                            <td data-th="Subtotal" class="text-center">@(product.Product.Price * product.Quantity)</td>
+                            <td class="actions" data-th="">
+                                <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
+                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                            </td>
                         </div>
-                    </div>
-                </td>
-                <td data-th="Price">$1.99</td>
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    @foreach (var q in ViewBag.cart)
-                    {
-                        <td data-th="Quantity">
-                            <input type="number" class="form-control text-center" value="@q.Quantity">
-                        </td>
-                    }
-                }
-                else
-                {
-                    @foreach (var q in Model)
-                    {
-                        <td data-th="Quantity">
-                            <input type="number" class="form-control text-center" value="@q.Quantity">
-                        </td>
-                    }
-                }
 
+                    </tr>
+                    total += (product.Product.Price * product.Quantity);
+                }
+            }
+            else
+            {
+                foreach (var item in ViewBag.cart)
+                {
+                    <tr>
+                        <div class="col-lg-12">
+                            <td data-th="Product">
 
-                <td data-th="Subtotal" class="text-center">1.99</td>
-                <td class="actions" data-th="">
-                    <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
-                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
-                </td>
-            </tr>
+                                <div class="row">
+                                    <div class="col-sm-2 hidden-xs"><img src="http://placehold.it/100x100" alt="..." class="img-responsive" /></div>
+                                    <div class="col-sm-10">
+                                        <h4 class="nomargin">@item.Product.Name</h4>
+                                        <p>@item.Product.Description</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-th="Price">@item.Product.Price</td>
+                            <td data-th="Quantity">
+                                <input type="number" class="form-control text-center" value="@item.Quantity">
+                            </td>
+                            <td data-th="Subtotal" class="text-center">@(item.Product.Price * item.Quantity)</td>
+                            <td class="actions" data-th="">
+                                <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
+                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                            </td>
+                        </div>
+
+                    </tr>
+                    total += (item.Product.Price * item.Quantity);
+                }
+            }
+
         </tbody>
+     
         <tfoot>
-            <tr class="visible-xs">
-                <td class="text-center"><strong>Total 1.99</strong></td>
-            </tr>
+           
             <tr>
                 <td><a href="#" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                 <td colspan="2" class="hidden-xs"></td>
-                <td class="hidden-xs text-center"><strong>Total $1.99</strong></td>
+                <td class="hidden-xs text-center"><strong>@total $</strong></td>
                 <td><a class="btn btn-success btn-block" asp-area="" asp-controller="Cart" asp-action="CheckOut">Checkout</a> <i class="fa fa-angle-right"></i></></td>
             </tr>
         </tfoot>

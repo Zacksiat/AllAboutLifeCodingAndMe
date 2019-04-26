@@ -95,7 +95,7 @@ namespace EPaper.Models
         {
             foreach(var product in productsInCart)
             {
-                var stock = _context.Products.Find(product.Id).Stock;
+                var stock = _context.Products.Find(product.Id).Available;
                 if (stock < product.Quantity)
                 {
                     return false;
@@ -108,7 +108,7 @@ namespace EPaper.Models
         {
             foreach(var product in productsToRemoveFromStock)
             {
-                var stock = _context.Products.Find(product.Id).Stock;
+                var stock = _context.Products.Find(product.Id).Available;
                 stock -= product.Quantity;
                 _context.SaveChanges();
             }

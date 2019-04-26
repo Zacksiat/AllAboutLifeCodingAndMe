@@ -29,7 +29,7 @@ namespace EPaper.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
-        
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -96,21 +96,21 @@ namespace EPaper.Data
             builder.Entity<Magazine>(entity =>
             {
                 entity.Property(m => m.Publisher).IsRequired();
-        
+
             });
             builder.Entity<Cd>(entity =>
             {
                 entity.Property(c => c.Artist).IsRequired();
                 entity.Property(c => c.Label).IsRequired();
-         
+
             });
 
-            
+
             builder.Entity<Book>(entity =>
             {
-               
+
                 entity.Property(b => b.Author).IsRequired();
-                entity.Property(b => b.Publisher).IsRequired();   
+                entity.Property(b => b.Publisher).IsRequired();
             });
 
             builder.Entity<Comic>(entity =>
@@ -140,7 +140,13 @@ namespace EPaper.Data
                     userManager.AddToRoleAsync(user, "Admin").Wait();
                 }
             }
+            else
+            {
+                ApplicationUser user = userManager.FindByEmailAsync("asdf@gmail.com").Result;
+                userManager.AddToRoleAsync(user, "Admin");
+            }
         }
     }
 }
+
 
