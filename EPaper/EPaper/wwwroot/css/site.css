@@ -40,6 +40,9 @@ body {
     background-color: gainsboro;
     padding: 20px 0;
     margin-top: 20px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .fa-cart-plus {
@@ -106,3 +109,4 @@ body {
 .my-cart {
     margin-right: 20px;
 }
+
