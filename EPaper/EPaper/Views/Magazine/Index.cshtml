@@ -25,7 +25,8 @@
             <div class="card bg-light mb-3">
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-list"></i> Magazines</div>
                 <ul class="list-group category_block">
-                    <li class="list-group-item"><a href="category.cshtml">Gossip</a></li>
+                    
+                    <li class="list-group-item"><a asp-controller="Magazine" asp-action="Index" asp-route-category="Gossip">Gossip</a></li>
                     <li class="list-group-item"><a href="category.cshtml">TV</a></li>
                     <li class="list-group-item"><a href="category.cshtml">Koukos</a></li>
                     <li class="list-group-item"><a href="category.cshtml">Entetainment</a></li>

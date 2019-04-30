@@ -50,8 +50,6 @@ namespace EPaper.Controllers
             if (ModelState.IsValid)
             {
                 comic.Product.Type = "Comic";
-                await _context.AddAsync(comic.Product);
-                comic.ProductId = comic.Product.ProductId;
                 await _context.AddAsync(comic);
                 await _context.SaveChangesAsync();
 

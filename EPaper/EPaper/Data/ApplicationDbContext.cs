@@ -68,14 +68,10 @@ namespace EPaper.Data
 
             builder.Entity<Order>(entity =>
             {
-                entity.HasOne(p => p.Payment)
-                     .WithOne(p => p.Order)
-                     .HasForeignKey<Payment>(o => o.Id);
-                // entity.HasKey(k => k.PaymentId);
-                entity.HasKey(p => p.PaymentId);
+             
                 entity.HasOne(u => u.ApplicationUser)
                 .WithMany(o => o.Orders)
-                .HasForeignKey(u => u.ApplicationUserId)
+                .HasForeignKey(u => u.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 

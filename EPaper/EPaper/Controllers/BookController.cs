@@ -54,8 +54,6 @@ namespace EPaper.Models
             {
 
                 book.Product.Type = "Book";
-                await _context.AddAsync(book.Product);
-                book.ProductId = book.Product.ProductId;
                 await _context.AddAsync(book);
                 await _context.SaveChangesAsync();
 
@@ -85,11 +83,8 @@ namespace EPaper.Models
             {
                 try
                 {
-                    //Product product =  _context.Products.Find(book.ProductId);
-                    //product.Price = book.Price;
-                    //product.Name = book.Name;
-                    //_context.Update(book);
-                    //_context.Update(product);
+               
+                    _context.Update(book);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

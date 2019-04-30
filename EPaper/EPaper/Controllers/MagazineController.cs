@@ -18,11 +18,28 @@ namespace EPaper.Models
         {
             _context = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category)
         {
-
-            var applicationDbContext = _context.Magazines.Include(m=>m.Product);
-            return View(await applicationDbContext.ToListAsync());
+            if (category == null)
+            {
+                var applicationDbContext = _context.Magazines.Include(m => m.Product);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                if (_context.Magazines.Where(p => p.Category == category).Any())
+                {
+                    var applicationDbContext = _context.Magazines.Include(m => m.Product).Where(p => p.Category == category);
+                    return View(await applicationDbContext.ToListAsync());
+                }
+                else
+                {
+                    return NotFound();
+                }
+             
+                
+            }
+        
         }
 
         public async Task<IActionResult> MagazineIndex()
@@ -48,8 +65,6 @@ namespace EPaper.Models
             if (ModelState.IsValid)
             {
                 magazine.Product.Type = "Magazine";
-                await _context.AddAsync(magazine.Product);
-                magazine.ProductId = magazine.Product.ProductId;
                 await _context.AddAsync(magazine);
                 await _context.SaveChangesAsync();
 

@@ -51,8 +51,6 @@ namespace EPaper.Models
             if (ModelState.IsValid)
             {
                 cd.Product.Type = "Cd"; 
-                await _context.AddAsync(cd.Product);
-                cd.ProductId = cd.Product.ProductId;
                 await _context.AddAsync(cd);
                 await _context.SaveChangesAsync();
 

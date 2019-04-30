@@ -34,28 +34,9 @@ namespace EPaper.Models
                     .Where(c => c.UserId == userId && c.OrderId == null)
                     .ToList();
 
-                List<Item> sessionCart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
-                if (sessionCart != null)
-                {
+                carts = FromSessionCartToUserCart(carts);
+                HttpContext.Session.Clear();
 
-                    foreach (var item in sessionCart)
-                    {
-                        Cart cart = ProductIsInCart(item.Product.ProductId);
-                        if (cart == null)
-                        {
-                            carts.Add(new Cart
-                            {
-                                UserId = GetUserId(),
-                                Product = item.Product,
-                                Quantity = item.Quantity
-                            });
-                        }
-                        else
-                        {
-                            cart.Quantity++;
-                        }
-                    }
-                }
                 if (carts != null)
                 {
                     _context.SaveChanges();
@@ -66,7 +47,9 @@ namespace EPaper.Models
                     List<Cart> EmptyCart = new List<Cart>();
                     return View(EmptyCart);
                 }
+
             }
+
             else
             {
                 if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
@@ -89,7 +72,11 @@ namespace EPaper.Models
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPost]
         [ActionName("AddtoCart")]
         [ValidateAntiForgeryToken]
@@ -98,7 +85,6 @@ namespace EPaper.Models
             var product = _context.Products.Find(id);
             if (!(product == null))
             {
-
                 if (User.Identity.IsAuthenticated)
                 {
 
@@ -196,15 +182,7 @@ namespace EPaper.Models
                 {
                     return NotFound();
                 }
-
-                if (cart.Quantity <= 1)
-                {
-                    _context.Carts.Remove(cart);
-                }
-                else
-                {
-                    cart.Quantity = --cart.Quantity;
-                }
+                _context.Carts.Remove(cart);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -225,18 +203,41 @@ namespace EPaper.Models
             }
 
         }
-
-        // GET : /CheckOut
-        public IActionResult CheckOut()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateQuantity([Bind("Quantity")]Cart cart)
         {
-            if (User.Identity.IsAuthenticated)
-
-
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("Create", "Payment");
-
+                _context.Carts.Update(cart);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
             return NotFound();
+        }
+
+        // GET : /CheckOut
+        [Authorize]
+        public IActionResult CheckOut()
+        {
+            var userId = GetUserId();
+            List<Cart> carts = _context.Carts
+                   .Include(p => p.Product)
+                   .Where(c => c.UserId == userId && c.OrderId == null)
+                   .ToList();
+
+            carts = FromSessionCartToUserCart(carts);
+            HttpContext.Session.Clear();
+            
+            if (carts != null)
+            {
+                _context.SaveChanges();
+                double total = CountTotal(carts);
+               
+                return View("~/Views/Payment/Create.cshtml");
+            }
+            return NotFound();
+
         }
 
         private string GetUserId()
@@ -265,6 +266,43 @@ namespace EPaper.Models
                 }
             }
             return -1;
+        }
+
+        private List<Cart> FromSessionCartToUserCart(List<Cart> carts)
+        {
+            List<Item> sessionCart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+            if (sessionCart != null)
+            {
+
+                foreach (var item in sessionCart)
+                {
+                    Cart cart = ProductIsInCart(item.Product.ProductId);
+                    if (cart == null)
+                    {
+                        carts.Add(new Cart
+                        {
+                            UserId = GetUserId(),
+                            Product = item.Product,
+                            Quantity = item.Quantity
+                        });
+                    }
+                    else
+                    {
+                        cart.Quantity += item.Quantity;
+                    }
+                }
+            }
+            return carts;
+        }
+
+        private double CountTotal(List<Cart> carts)
+        {
+            double total = 0;
+            foreach(var item in carts)
+            {
+                total += (item.Product.Price * item.Quantity);
+            }
+            return total;
         }
     }
 }

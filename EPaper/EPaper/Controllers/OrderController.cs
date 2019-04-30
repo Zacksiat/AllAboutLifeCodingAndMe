@@ -22,11 +22,14 @@ namespace EPaper.Models
         }
 
         // GET : /Orders
+        [Authorize]
         public IActionResult Index()
         {
-            var userId = GetUserId();
-            List<Order> orders = _context.Orders.Where(o => o.ApplicationUserId == userId).ToList();
-            return View();
+           
+                List<Order> orders = new List<Order>();
+                orders = _context.Orders.Where(u => u.UserId == GetUserId()).ToList();
+                return View(orders);
+            
         }
         
 
@@ -37,6 +40,7 @@ namespace EPaper.Models
              List<Order> Orders =_context.Orders.ToList();
             return View(Orders);
         }
+
         private string GetUserId()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;

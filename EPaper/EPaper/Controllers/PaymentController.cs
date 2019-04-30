@@ -19,6 +19,7 @@ namespace EPaper.Models
             _context = context;
         }
 
+
         // GET : /Payment/Create
         public IActionResult Create()
         {
@@ -28,25 +29,31 @@ namespace EPaper.Models
         // POST :/Payment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentMethod,Orders.Address")]Payment payment)
+        public async Task<IActionResult> Create([Bind("Payment,Address")]Order order)
         {
             if (ModelState.IsValid)
             {
 
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var carts = GetUserCartProducts();
-
-                if (CheckProductAvailability(carts))
+                var userId = GetUserId();
+                var carts = GetUserCarts();
+                if (carts == null)
                 {
-                    payment.UserId = userId;
-                    payment.Order.ApplicationUserId = userId;
-                    payment.Total = CountTotal(userId);
-
-                    _context.Payments.Add(payment);
+                    return NotFound();
+                }
+                if (GetUnavailableProducts(carts).Count == 0)
+                {
+                    order.UserId = userId;
+                    order.Payment.Total = CountTotal(userId);
+                    order.Payment.UserId = userId;
+                    await _context.Orders.AddAsync(order);
+                    foreach (var cart in carts)
+                    {
+                        cart.OrderId = order.PaymentId;
+                    }
 
                     ReduceProductStock(carts);
 
-                   await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
@@ -54,8 +61,7 @@ namespace EPaper.Models
                 }
 
             }
-            //   _context.Payments.Add(payment);
-            return RedirectToAction("Create", "Order");
+            return RedirectToAction("Index", "Order");
         }
 
 
@@ -77,39 +83,47 @@ namespace EPaper.Models
 
             return total;
         }
-        private List<ProductsInCart> GetUserCartProducts()
+        private List<Cart> GetUserCarts()
         {
             var userId = GetUserId();
-            List<ProductsInCart> productsInCart = _context.Carts
-                                               .Where(c => c.UserId == userId
-                                                        && c.OrderId == null)
-                                               .Select(x => new ProductsInCart
-                                               {
-                                                   Id = x.ProductId,
-                                                   Quantity = x.Quantity
-                                               }).ToList();
-            return productsInCart;
+            List<Cart> userCarts = _context.Carts
+                                                        .Include(c => c.Product)
+                                                        .Where(c => c.UserId == userId && c.OrderId == null)
+                                                        .ToList();
+            if (userCarts.Count > 0)
+            {
+                return userCarts;
+            }
+            return null;
         }
 
-        private bool CheckProductAvailability(List<ProductsInCart> productsInCart)
+        private List<Product> GetUnavailableProducts(List<Cart> userCarts)
         {
-            foreach(var product in productsInCart)
+
+            List<Product> unavailableProducts = new List<Product>();
+            foreach (var cart in userCarts)
             {
-                var stock = _context.Products.Find(product.Id).Available;
-                if (stock < product.Quantity)
+                var product = _context.Products.Where(p => p.ProductId == cart.ProductId).First();
+                if(product.Available < cart.Quantity)
                 {
-                    return false;
+                    unavailableProducts.Add(product);
                 }
             }
-            return true;
+
+            return unavailableProducts;
         }
 
-        private void ReduceProductStock(List<ProductsInCart> productsToRemoveFromStock)
+        private void ReduceProductStock(List<Cart> userCarts)
         {
-            foreach(var product in productsToRemoveFromStock)
+            foreach (var cart in userCarts)
             {
-                var stock = _context.Products.Find(product.Id).Available;
-                stock -= product.Quantity;
+                var products = _context.Products.Where(p => p.ProductId == cart.ProductId).ToList();
+                foreach (var prod in products)
+                {
+                    prod.Available -= cart.Quantity;
+                    _context.Products.Update(prod);
+                }
+
                 _context.SaveChanges();
             }
         }
@@ -121,4 +135,5 @@ namespace EPaper.Models
         }
 
     }
+
 }
