@@ -127,44 +127,38 @@ namespace EPaper.Models
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
-        //GET:/Book/Delete/5
+        // GET: Products/Delete/5
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete (Product product)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var book = _context.Books.Find(product.ProductId);
-            return View(book);
-        }
+            if (id == null)
+            {
+                return BadRequest();
+            }
 
-        // POST:/Book/Delete/4
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
+            {
+                return BadRequest();
+            }
+
+            return View(product);
+        }
+        /// <summary>
+        ///  POST:/ Delete/Product/id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        public async Task<IActionResult> Delete(int id)
         {
-
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookExists(book.ProductId))
-                    {
-                        return BadRequest();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("AdminIndex", "Product");
-            }
-            return View(book);
+            var product = await _context.Products.FindAsync(id);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("BookIndex");
         }
 
     }

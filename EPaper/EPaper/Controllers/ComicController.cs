@@ -123,41 +123,38 @@ namespace EPaper.Controllers
             return _context.Products.Any(e => e.ProductId == id);
         }
 
-        //GET:/Comic/Edit/5
+        // GET: Products/Delete/5
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(Product product)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var comic = _context.Comics.Find(product.ProductId);
-            return View(comic);
-        }
+            if (id == null)
+            {
+                return BadRequest();
+            }
 
-        // POST:/Comic/Edit/4
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
+            {
+                return BadRequest();
+            }
+
+            return View(product);
+        }
+        /// <summary>
+        ///  POST:/ Delete/Product/id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Publisher,Product")]Comic comic)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(comic);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ComicExists(comic.ProductId))
-                    {
-                        return BadRequest();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("AdminIndex", "Product");
-            }
-            return View(comic);
+            var product = await _context.Products.FindAsync(id);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ComicIndex");
         }
 
     }

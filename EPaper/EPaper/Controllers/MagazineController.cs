@@ -123,48 +123,39 @@ namespace EPaper.Models
             return View(magazine);
         }
 
-        //GET:/Magazine/Edit/5
-        [Authorize(Roles = "Admin")]
-        public IActionResult Delete(Product product)
-        {
-            var magazine = _context.Magazines.Find(product.ProductId);
-            return View(magazine);
-        }
 
-        // POST:/Magazine/Edit/4
+        // GET: Products/Delete/5
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
+            {
+                return BadRequest();
+            }
+
+            return View(product);
+        }
+        /// <summary>
+        ///  POST:/ Delete/Product/id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete([Bind("Genre,Publisher,DatePublished,Pages,Issue,Product")]Magazine magazine)
+        public async Task<IActionResult> Delete(int id)
         {
-
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(magazine);
-                    //Product product = _context.Products.Find(magazine.ProductId);
-                    //product.Price = magazine..Price;
-                    //product.Name = magazine.Name;
-                    //_context.Update(magazine);
-                    //_context.Update(product);
-                    //await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MagazineExists(magazine.ProductId))
-                    {
-                        return BadRequest();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("AdminIndex", "Product");
-            }
-            return View(magazine);
+            var product = await _context.Products.FindAsync(id);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ComicIndex");
         }
 
         private bool MagazineExists(int id)
