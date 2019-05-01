@@ -25,19 +25,37 @@ namespace EPaper.Models
         [Authorize]
         public IActionResult Index()
         {
+            IEnumerable<OrdersViewModel> ordersList;
+            if (User.Identity.Name.Equals("a@gmail.com"))
+            {
+                ordersList = (from f in _context.Carts
+                              join d in _context.Orders
+                              on f.UserId equals d.UserId
+                              join p in _context.Products
+                              on f.ProductId equals p.ProductId
+                              where f.OrderId != null
+                              select new OrdersViewModel { PaymentId = d.PaymentId, Name = p.Name, Category = p.Type, Quantity = f.Quantity, Price = p.Price }).ToList();
 
-            var orders = _context.Carts.Include(c => c.Order)
-                                       .Where(x => x.OrderId != null &&
-                                                   x.UserId == GetUserId())
-                                       .ToList();
-               
-                return View(orders);
-            
+            }
+            else
+            {
+                var idtemp = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                ordersList = (from f in _context.Carts
+                              join d in _context.Orders
+                              on f.UserId equals d.UserId
+                              join p in _context.Products
+                              on f.ProductId equals p.ProductId
+                              where (f.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value && d.PaymentId == f.OrderId)
+                              select new OrdersViewModel { PaymentId = d.PaymentId, Name = p.Name, Category = p.Type, Quantity = f.Quantity, Price = p.Price }).ToList();
+            }
+
+            return View(ordersList);
+
         }
-        
+
 
         // GET : /Admin/Orders
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminIndex()
         {
             var orders = _context.Carts.Include(c => c.Order)
