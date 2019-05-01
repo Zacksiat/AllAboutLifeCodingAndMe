@@ -25,9 +25,12 @@ namespace EPaper.Models
         [Authorize]
         public IActionResult Index()
         {
-           
-                List<Order> orders = new List<Order>();
-                orders = _context.Orders.Where(u => u.UserId == GetUserId()).ToList();
+
+            var orders = _context.Carts.Include(c => c.Order)
+                                       .Where(x => x.OrderId != null &&
+                                                   x.UserId == GetUserId())
+                                       .ToList();
+               
                 return View(orders);
             
         }
@@ -37,8 +40,10 @@ namespace EPaper.Models
         [Authorize(Roles ="Admin")]
         public IActionResult AdminIndex()
         {
-             List<Order> Orders =_context.Orders.ToList();
-            return View(Orders);
+            var orders = _context.Carts.Include(c => c.Order)
+                                       .Where(c => c.OrderId != null)
+                                       .ToList();
+            return View(orders);
         }
 
         private string GetUserId()
