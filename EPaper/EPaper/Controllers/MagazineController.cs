@@ -123,9 +123,54 @@ namespace EPaper.Models
             return View(magazine);
         }
 
+        //GET:/Magazine/Edit/5
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(Product product)
+        {
+            var magazine = _context.Magazines.Find(product.ProductId);
+            return View(magazine);
+        }
+
+        // POST:/Magazine/Edit/4
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete([Bind("Genre,Publisher,DatePublished,Pages,Issue,Product")]Magazine magazine)
+        {
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(magazine);
+                    //Product product = _context.Products.Find(magazine.ProductId);
+                    //product.Price = magazine..Price;
+                    //product.Name = magazine.Name;
+                    //_context.Update(magazine);
+                    //_context.Update(product);
+                    //await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MagazineExists(magazine.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(magazine);
+        }
+
         private bool MagazineExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
+        
     }
 }

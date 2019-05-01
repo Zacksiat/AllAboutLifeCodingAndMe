@@ -122,5 +122,43 @@ namespace EPaper.Controllers
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
+
+        //GET:/Comic/Edit/5
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(Product product)
+        {
+            var comic = _context.Comics.Find(product.ProductId);
+            return View(comic);
+        }
+
+        // POST:/Comic/Edit/4
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Publisher,Product")]Comic comic)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(comic);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ComicExists(comic.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(comic);
+        }
+
     }
 }

@@ -127,5 +127,45 @@ namespace EPaper.Models
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
+        //GET:/Book/Delete/5
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete (Product product)
+        {
+            var book = _context.Books.Find(product.ProductId);
+            return View(book);
+        }
+
+        // POST:/Book/Delete/4
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        {
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    _context.Update(book);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BookExists(book.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(book);
+        }
+
     }
 }

@@ -123,5 +123,43 @@ namespace EPaper.Models
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
+
+        //GET:/Cd/Delete/5
+        [Authorize(Roles = "Admin")]
+        public IActionResult Delete(Product product)
+        {
+            var cd = _context.Cds.Find(product.ProductId);
+            return View(cd);
+        }
+
+        // POST:/Cd/Delete/4
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Product")]Cd cd)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    _context.Update(cd);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CdExists(cd.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(cd);
+        }
     }
 }
