@@ -76,7 +76,9 @@
                 <td>
                     @Html.DisplayFor(m => item.Product.Available)
                 </td>
-
+                <td>
+                   <partial name="_TableButtonPartial" model="item.ProductId"/>
+                </td>
 
 
             </tr>
