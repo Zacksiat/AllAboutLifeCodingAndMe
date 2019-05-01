@@ -52,37 +52,39 @@
             </tr>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(m => item.Product.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => item.Category)
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Category)
 
-                    </td>
+                </td>
 
-                    <td>
-                        @Html.DisplayFor(m => item.Product.Price)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => item.NumberOfSongs)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => item.Label)
+                <td>
+                    @Html.DisplayFor(m => item.Product.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.NumberOfSongs)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Label)
 
-                    </td>
-                    <td>
-                        @Html.DisplayFor(mo => item.Artist)
+                </td>
+                <td>
+                    @Html.DisplayFor(mo => item.Artist)
 
-                    </td>
+                </td>
 
-                    <td>
-                        @Html.DisplayFor(m => item.Product.Available)
-                    </td>
+                <td>
+                    @Html.DisplayFor(m => item.Product.Available)
+                </td>
 
+                <td>
+                    <partial name="_TableButtonPartial" model="item.ProductId" />
+                </td>
 
-
-                </tr>
+            </tr>
             }
         </table>
     </div>
