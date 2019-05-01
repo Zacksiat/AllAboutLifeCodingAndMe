@@ -194,11 +194,11 @@ namespace EPaper.Models
                 int index = isExist(id);
                 if (index != -1)
                 {
-                    cart[index].Quantity--;
+                    cart.RemoveAt(index);
                 }
                 else
                 {
-                    cart.RemoveAt(index);
+                    return BadRequest();
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
                 return RedirectToAction("Index");
