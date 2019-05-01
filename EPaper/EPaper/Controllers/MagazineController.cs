@@ -155,7 +155,7 @@ namespace EPaper.Models
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-            return RedirectToAction("ComicIndex");
+            return RedirectToAction("MagazineIndex");
         }
 
         private bool MagazineExists(int id)
