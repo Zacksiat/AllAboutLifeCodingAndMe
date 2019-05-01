@@ -38,7 +38,7 @@ namespace EPaper.Models
                 var carts = GetUserCarts();
                 if (carts == null)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
                 if (GetUnavailableProducts(carts).Count == 0)
                 {
@@ -57,7 +57,7 @@ namespace EPaper.Models
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
 
             }

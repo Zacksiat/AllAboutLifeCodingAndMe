@@ -22,19 +22,24 @@ namespace EPaper.Models
         {
             if (category == null)
             {
-                var applicationDbContext = _context.Magazines.Include(m => m.Product);
+                var applicationDbContext = _context.Magazines
+                                                   .Include(m => m.Product)
+                                                   .Where(p => p.Product.Available > 0);
                 return View(await applicationDbContext.ToListAsync());
             }
             else
             {
                 if (_context.Magazines.Where(p => p.Category == category).Any())
                 {
-                    var applicationDbContext = _context.Magazines.Include(m => m.Product).Where(p => p.Category == category);
+                    var applicationDbContext = _context.Magazines
+                                                       .Include(m => m.Product)
+                                                       .Where(p => p.Category == category &&
+                                                              p.Product.Available > 0);
                     return View(await applicationDbContext.ToListAsync());
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
              
                 
@@ -106,7 +111,7 @@ namespace EPaper.Models
                 {
                     if (!MagazineExists(magazine.ProductId))
                     {
-                        return NotFound();
+                        return BadRequest();
                     }
                     else
                     {

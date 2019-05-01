@@ -19,11 +19,33 @@ namespace EPaper.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category)
         {
 
-            var applicationDbContext = _context.Comics.Include(c=>c.Product);
-            return View(await applicationDbContext.ToListAsync());
+            if (category == null)
+            {
+                var applicationDbContext = _context.Comics
+                                                   .Include(m => m.Product)
+                                                   .Where(p => p.Product.Available > 0);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                if (_context.Magazines.Where(p => p.Category == category).Any())
+                {
+                    var applicationDbContext = _context.Comics
+                                                       .Include(m => m.Product)
+                                                       .Where(p => p.Category == category &&
+                                                              p.Product.Available > 0);
+                    return View(await applicationDbContext.ToListAsync());
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+
+            }
         }
 
         public async Task<IActionResult> ComicIndex()
@@ -84,7 +106,7 @@ namespace EPaper.Controllers
                 {
                     if (!ComicExists(comic.ProductId))
                     {
-                        return NotFound();
+                        return BadRequest();
                     }
                     else
                     {

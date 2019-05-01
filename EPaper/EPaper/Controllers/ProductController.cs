@@ -40,14 +40,14 @@ namespace EPaper.Models
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return View(product);

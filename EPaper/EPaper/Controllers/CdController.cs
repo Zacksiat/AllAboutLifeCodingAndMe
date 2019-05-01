@@ -20,11 +20,32 @@ namespace EPaper.Models
             _context = context;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category)
         {
+            if (category == null)
+            {
+                var applicationDbContext = _context.Cds
+                                                   .Include(m => m.Product)
+                                                   .Where(p => p.Product.Available > 0);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                if (_context.Cds.Where(p => p.Category == category).Any())
+                {
+                    var applicationDbContext = _context.Cds
+                                                       .Include(m => m.Product)
+                                                       .Where(p => p.Category == category &&
+                                                              p.Product.Available > 0);
+                    return View(await applicationDbContext.ToListAsync());
+                }
+                else
+                {
+                    return BadRequest();
+                }
 
-            var applicationDbContext = _context.Cds.Include(c => c.Product);
-            return View(await applicationDbContext.ToListAsync());
+
+            }
         }
         //Index gia to cd
         public async Task<IActionResult> CdIndex()
@@ -86,7 +107,7 @@ namespace EPaper.Models
                 {
                     if (!CdExists(cd.ProductId))
                     {
-                        return NotFound();
+                        return BadRequest();
                     }
                     else
                     {

@@ -21,17 +21,37 @@ namespace EPaper.Models
             _context = context;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category)
         {
+            if (category == null)
+            {
+                var applicationDbContext = _context.Books
+                                                   .Include(m => m.Product)
+                                                   .Where(p => p.Product.Available > 0);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                if (_context.Books.Where(p => p.Category == category).Any())
+                {
+                    var applicationDbContext = _context.Books
+                                                       .Include(m => m.Product)
+                                                       .Where(p => p.Category == category &&
+                                                              p.Product.Available > 0);
+                    return View(await applicationDbContext.ToListAsync());
+                }
+                else
+                {
+                    return BadRequest();
+                }
 
-            var applicationDbContext = _context.Books.Include(b => b.Product);
-            return View(await applicationDbContext.ToListAsync());
+
+            }
         }
 
-
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> BookIndex()
-        {
-
+        { 
             var applicationDbContext = _context.Books.Include(b=>b.Product);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -91,7 +111,7 @@ namespace EPaper.Models
                 {
                     if (!BookExists(book.ProductId))
                     {
-                        return NotFound();
+                        return BadRequest();
                     }
                     else
                     {

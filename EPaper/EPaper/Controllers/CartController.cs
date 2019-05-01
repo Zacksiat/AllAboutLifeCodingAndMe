@@ -83,8 +83,10 @@ namespace EPaper.Models
         public async Task<IActionResult> AddtoCart(int id)
         {
             var product = _context.Products.Find(id);
-            if (!(product == null))
+            int quantity = 1;
+            if (product != null && CheckIfProductAvailable(id, quantity))
             {
+                
                 if (User.Identity.IsAuthenticated)
                 {
 
@@ -143,7 +145,7 @@ namespace EPaper.Models
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
             Product product = _context.Products.Find(id);
             if (User.Identity.IsAuthenticated)
@@ -153,7 +155,7 @@ namespace EPaper.Models
 
                 if (cart == null)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
 
                 return View(product);
@@ -180,7 +182,7 @@ namespace EPaper.Models
 
                 if (cart == null)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
                 _context.Carts.Remove(cart);
                 await _context.SaveChangesAsync();
@@ -213,7 +215,7 @@ namespace EPaper.Models
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return NotFound();
+            return BadRequest();
         }
 
         // GET : /CheckOut
@@ -236,7 +238,7 @@ namespace EPaper.Models
                
                 return View("~/Views/Payment/Create.cshtml");
             }
-            return NotFound();
+            return BadRequest();
 
         }
 
@@ -303,6 +305,17 @@ namespace EPaper.Models
                 total += (item.Product.Price * item.Quantity);
             }
             return total;
+        }
+       private bool CheckIfProductAvailable(int id,int quantity)
+        {
+            Product product  = _context.Products.Find(id); 
+            if(product.Available >= quantity)
+            {
+                product.Available -= quantity;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }
