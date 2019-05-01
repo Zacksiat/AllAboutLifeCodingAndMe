@@ -9,8 +9,24 @@
 <br/></br>
 <div class="row">
 
-    <div class="col-md-4"><a asp-area="" asp-controller="Product" asp-action="AdminIndex">View Products</a></div>
-    <div class="col-md-4"> <a asp-area="" asp-controller="Role" asp-action="Index">View Users</a></div>
-    <div class="col-md-4"> <a asp-area="" asp-controller="Home" asp-action="Index">Manage Orders</a></div>
+    <div class="col-md-4">
+        <a type="button" class="btn btn-primary" a asp-action="AdminIndex" asp-controller="Product">
+           
+            View Products
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a type="button" class="btn btn-primary" a asp-controller="Role" asp-action="Index">
+
+           View Users
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a type="button" class="btn btn-primary" a asp-controller="Home" asp-action="Index">
+
+            Manage Orders
+        </a>
+        
+    </div>
     
 </div>
