@@ -26,8 +26,10 @@ namespace EPaper.Models
         public IActionResult Index()
         {
             IEnumerable<OrdersViewModel> ordersList;
-            if (User.Identity.Name.Equals("a@gmail.com"))
+
+            if (User.IsInRole("Admin"))
             {
+                
                 ordersList = (from f in _context.Carts
                               join d in _context.Orders
                               on f.UserId equals d.UserId

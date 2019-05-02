@@ -44,8 +44,6 @@ namespace EPaper.Models
                 {
                     return BadRequest();
                 }
-
-
             }
         }
 

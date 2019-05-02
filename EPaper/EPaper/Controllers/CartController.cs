@@ -35,7 +35,8 @@ namespace EPaper.Models
                     .ToList();
 
                 carts = FromSessionCartToUserCart(carts);
-                HttpContext.Session.Clear();
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
+            //    HttpContext.Session.Clear();
 
                 if (carts != null)
                 {
@@ -229,10 +230,14 @@ namespace EPaper.Models
                    .ToList();
 
             carts = FromSessionCartToUserCart(carts);
-            HttpContext.Session.Clear();
-            
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
             if (carts != null)
             {
+                foreach(var item in carts)
+                {
+                    _context.Update(item);
+                }
+               
                 _context.SaveChanges();
                 double total = CountTotal(carts);
                
@@ -294,7 +299,7 @@ namespace EPaper.Models
                     }
                 }
             }
-            return carts;
+            return carts ;
         }
 
         private double CountTotal(List<Cart> carts)

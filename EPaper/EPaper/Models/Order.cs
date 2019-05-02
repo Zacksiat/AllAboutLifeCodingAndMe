@@ -21,7 +21,7 @@ namespace EPaper.Models
 
         public string Address { get; set; }
 
-        public Cart Cart { get; set; }
+        public IEnumerable<Cart> Carts { get; set; }
 
         public Payment Payment { get; set; }
     }

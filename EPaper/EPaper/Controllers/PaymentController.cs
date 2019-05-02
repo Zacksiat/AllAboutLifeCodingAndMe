@@ -46,11 +46,15 @@ namespace EPaper.Models
                     order.Payment.Total = CountTotal(userId);
                     order.Payment.UserId = userId;
                     await _context.Orders.AddAsync(order);
+                    await _context.SaveChangesAsync();
                     foreach (var cart in carts)
                     {
                         cart.OrderId = order.PaymentId;
+                        _context.Carts.Update(cart);
+                        _context.SaveChanges();
+                        
                     }
-
+                    await _context.SaveChangesAsync();
                     ReduceProductStock(carts);
 
                     await _context.SaveChangesAsync();
@@ -88,7 +92,8 @@ namespace EPaper.Models
             var userId = GetUserId();
             List<Cart> userCarts = _context.Carts
                                                         .Include(c => c.Product)
-                                                        .Where(c => c.UserId == userId && c.OrderId == null)
+                                                        .Where(c => c.UserId == userId 
+                                                                  && c.OrderId == null)
                                                         .ToList();
             if (userCarts.Count > 0)
             {

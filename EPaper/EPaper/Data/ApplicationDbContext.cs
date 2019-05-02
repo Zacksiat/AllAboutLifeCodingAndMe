@@ -56,19 +56,41 @@ namespace EPaper.Data
             });
 
 
-            builder.Entity<Cart>().HasOne(x => x.ApplicationUser)
-                .WithMany(c => c.Carts)
-                .HasForeignKey(x => x.UserId)
-                .IsRequired();
-            builder.Entity<Cart>().HasOne(x => x.Product);
-            builder.Entity<Cart>().HasOne(o => o.Order);
-            builder.Entity<Cart>().Property(x => x.Quantity).IsRequired();
-            builder.Entity<Cart>().HasKey(o => o.Id);
+            //builder.Entity<Cart>().HasOne(x => x.ApplicationUser)
+            //    .WithMany(c => c.Carts)
+            //    .HasForeignKey(x => x.UserId)
+            //    .IsRequired();
+            //builder.Entity<Cart>().HasOne(x => x.Product);
+            ////    builder.Entity<Cart>().HasOne(o => o.Order);
+            //builder.Entity<Cart>().Property(x => x.Quantity).IsRequired();
+            //builder.Entity<Cart>().HasKey(o => o.Id);
+           
 
+            builder.Entity<Cart>(entity =>
+            {
+                entity.HasOne(x => x.ApplicationUser)
+                      .WithMany(c => c.Carts)
+                      .HasForeignKey(p => p.UserId)
+                      .IsRequired();
+
+                entity.HasOne(x => x.Product);
+
+                entity.HasOne(o => o.Order)
+                      .WithMany(c => c.Carts)
+                      .HasForeignKey(o => o.OrderId);
+
+                entity.Property(x => x.Quantity).IsRequired();
+
+                entity.HasKey(c => c.Id);
+
+
+                      
+            });
+            
 
             builder.Entity<Order>(entity =>
             {
-             
+
                 entity.HasOne(u => u.ApplicationUser)
                 .WithMany(o => o.Orders)
                 .HasForeignKey(u => u.UserId)
