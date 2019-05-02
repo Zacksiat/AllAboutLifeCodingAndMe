@@ -22,29 +22,33 @@ namespace EPaper.Models
         [AllowAnonymous]
         public async Task<IActionResult> Index(string category)
         {
+            CdViewModel viewModel = new CdViewModel();
+            viewModel.Categories = await _context.Cds.Select(c => c.Category).Distinct().ToListAsync();
+
             if (category == null)
             {
-                var applicationDbContext = _context.Cds
-                                                   .Include(m => m.Product)
-                                                   .Where(p => p.Product.Available > 0);
-                return View(await applicationDbContext.ToListAsync());
+                viewModel.Cds = await _context.Cds
+                                            .Include(m => m.Product)
+                                            .Where(p => p.Product.Available > 0)
+                                            .ToListAsync();
+                return View(viewModel);
             }
             else
             {
                 if (_context.Cds.Where(p => p.Category == category).Any())
                 {
-                    var applicationDbContext = _context.Cds
-                                                       .Include(m => m.Product)
-                                                       .Where(p => p.Category == category &&
-                                                              p.Product.Available > 0);
-                    return View(await applicationDbContext.ToListAsync());
+
+                    viewModel.Cds = await _context.Cds
+                                                      .Include(m => m.Product)
+                                                      .Where(p => p.Category == category &&
+                                                             p.Product.Available > 0)
+                                                             .ToListAsync();
+                    return View(viewModel);
                 }
                 else
                 {
                     return BadRequest();
                 }
-
-
             }
         }
         //Index gia to cd

@@ -1,4 +1,4 @@
-﻿@model List<EPaper.Models.Comic>
+﻿@model EPaper.Models.ComicViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -27,18 +27,17 @@
             <div class="card bg-light mb-3">
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-list"></i> Comics</div>
                 <ul class="list-group category_block">
-                    <li class="list-group-item"><a href="category.cshtml">Example1</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Example2</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Example3</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Example4</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Example5</a></li>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li class="list-group-item"><a asp-controller="Magazine" asp-action="Index" asp-route-category="@cat">@cat</a></li>
+                    }
                 </ul>
             </div>
         </div>
 
         <div class="col">
             <div class="row">
-                @foreach (var comic in Model)
+                @foreach (var comic in Model.Comics)
                 {
 
                     <div class="col-12 col-md-6 col-lg-4">

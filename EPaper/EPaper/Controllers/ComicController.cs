@@ -19,35 +19,39 @@ namespace EPaper.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string category)
         {
+            ComicViewModel viewModel = new ComicViewModel();
+            viewModel.Categories = await _context.Comics.Select(c => c.Category).Distinct().ToListAsync();
 
             if (category == null)
             {
-                var applicationDbContext = _context.Comics
-                                                   .Include(m => m.Product)
-                                                   .Where(p => p.Product.Available > 0);
-                return View(await applicationDbContext.ToListAsync());
+                viewModel.Comics = await _context.Comics
+                                            .Include(m => m.Product)
+                                            .Where(p => p.Product.Available > 0)
+                                            .ToListAsync();
+                return View(viewModel);
             }
             else
             {
-                if (_context.Magazines.Where(p => p.Category == category).Any())
+                if (_context.Comics.Where(p => p.Category == category).Any())
                 {
-                    var applicationDbContext = _context.Comics
-                                                       .Include(m => m.Product)
-                                                       .Where(p => p.Category == category &&
-                                                              p.Product.Available > 0);
-                    return View(await applicationDbContext.ToListAsync());
+
+                    viewModel.Comics = await _context.Comics
+                                                      .Include(m => m.Product)
+                                                      .Where(p => p.Category == category &&
+                                                             p.Product.Available > 0)
+                                                             .ToListAsync();
+                    return View(viewModel);
                 }
                 else
                 {
                     return BadRequest();
                 }
-
-
             }
         }
-
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> ComicIndex()
         {
 

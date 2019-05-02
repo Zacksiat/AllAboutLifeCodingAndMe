@@ -23,22 +23,28 @@ namespace EPaper.Models
         [AllowAnonymous]
         public async Task<IActionResult> Index(string category)
         {
+            BookViewModel viewModel = new BookViewModel();
+            viewModel.Categories = await _context.Books.Select(c => c.Category).Distinct().ToListAsync();
+
             if (category == null)
             {
-                var applicationDbContext = _context.Books
-                                                   .Include(m => m.Product)
-                                                   .Where(p => p.Product.Available > 0);
-                return View(await applicationDbContext.ToListAsync());
+                viewModel.Books = await _context.Books
+                                            .Include(m => m.Product)
+                                            .Where(p => p.Product.Available > 0)
+                                            .ToListAsync();
+                return View(viewModel);
             }
             else
             {
                 if (_context.Books.Where(p => p.Category == category).Any())
                 {
-                    var applicationDbContext = _context.Books
-                                                       .Include(m => m.Product)
-                                                       .Where(p => p.Category == category &&
-                                                              p.Product.Available > 0);
-                    return View(await applicationDbContext.ToListAsync());
+
+                    viewModel.Books = await _context.Books
+                                                      .Include(m => m.Product)
+                                                      .Where(p => p.Category == category &&
+                                                             p.Product.Available > 0)
+                                                             .ToListAsync();
+                    return View(viewModel);
                 }
                 else
                 {
