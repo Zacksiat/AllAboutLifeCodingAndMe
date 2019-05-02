@@ -231,7 +231,7 @@ namespace EPaper.Models
 
             carts = FromSessionCartToUserCart(carts);
             SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
-            if (carts != null)
+            if (carts.Count > 0)
             {
                 foreach(var item in carts)
                 {
@@ -243,8 +243,7 @@ namespace EPaper.Models
                
                 return View("~/Views/Payment/Create.cshtml");
             }
-            return BadRequest();
-
+            return RedirectToAction("Index");
         }
 
         private string GetUserId()
