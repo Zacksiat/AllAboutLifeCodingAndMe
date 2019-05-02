@@ -38,7 +38,7 @@ namespace EPaper.Models
                 var carts = GetUserCarts();
                 if (carts == null)
                 {
-                    return BadRequest();
+                    return RedirectToAction("Index", "Cart");
                 }
                 if (GetUnavailableProducts(carts).Count == 0)
                 {
