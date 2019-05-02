@@ -28,7 +28,7 @@
                 <ul class="list-group category_block">
                     @foreach (var cat in Model.Categories)
                     {
-                        <li class="list-group-item"><a asp-controller="Magazine" asp-action="Index" asp-route-category="@cat">@cat</a></li>
+                        <li class="list-group-item"><a asp-controller="Book" asp-action="Index" asp-route-category="@cat">@cat</a></li>
                     }
                 </ul>
             </div>

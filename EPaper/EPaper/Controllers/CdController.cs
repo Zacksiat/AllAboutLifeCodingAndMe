@@ -71,7 +71,7 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Genre,Artist,Label,NumberOfSongs,Product")]Cd cd)
+        public async Task<IActionResult> Create([Bind("Artist,Label,NumberOfSongs,Product,Category")]Cd cd)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Product")]Cd cd)
+        public async Task<IActionResult> Edit([Bind("ProductId,Artist,Label,NumberOfSongs,Product,Category")]Cd cd)
         {
             if (ModelState.IsValid)
             {
