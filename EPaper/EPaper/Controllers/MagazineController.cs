@@ -20,37 +20,40 @@ namespace EPaper.Models
         }
         public async Task<IActionResult> Index(string category)
         {
+            MagazineViewModel viewModel = new MagazineViewModel();
+            viewModel.Categories = await _context.Magazines.Select(c => c.Category).Distinct().ToListAsync();
+
             if (category == null)
             {
-                var applicationDbContext = _context.Magazines
-                                                   .Include(m => m.Product)
-                                                   .Where(p => p.Product.Available > 0);
-                return View(await applicationDbContext.ToListAsync());
+                viewModel.Magazines = await _context.Magazines
+                                            .Include(m => m.Product)
+                                            .Where(p => p.Product.Available > 0)
+                                            .ToListAsync();
+                return View(viewModel);
             }
             else
             {
                 if (_context.Magazines.Where(p => p.Category == category).Any())
                 {
-                    var applicationDbContext = _context.Magazines
-                                                       .Include(m => m.Product)
-                                                       .Where(p => p.Category == category &&
-                                                              p.Product.Available > 0);
-                    return View(await applicationDbContext.ToListAsync());
+
+                    viewModel.Magazines = await _context.Magazines
+                                                      .Include(m => m.Product)
+                                                      .Where(p => p.Category == category &&
+                                                             p.Product.Available > 0)
+                                                             .ToListAsync();
+                    return View(viewModel);
                 }
                 else
                 {
                     return BadRequest();
                 }
-             
-                
             }
-        
         }
 
         public async Task<IActionResult> MagazineIndex()
         {
 
-            var applicationDbContext = _context.Magazines.Include(m=>m.Product);
+            var applicationDbContext = _context.Magazines.Include(m => m.Product);
             return View(await applicationDbContext.ToListAsync());
         }
         //GET:/Magazine/Create
@@ -162,6 +165,6 @@ namespace EPaper.Models
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
-        
+
     }
 }

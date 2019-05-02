@@ -1,4 +1,4 @@
-﻿@model List<EPaper.Models.Magazine>
+﻿@model EPaper.Models.MagazineViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -11,8 +11,7 @@
         <div class="col">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.cshtml">Home</a></li>
-                    <li class="breadcrumb-item"><a href="category.cshtml">Product</a></li>
+                    <li class="breadcrumb-item"><a href="/Home/Index">Home</a></li> 
                     <li class="breadcrumb-item active" aria-current="page">Magazines</li>
                 </ol>
             </nav>
@@ -25,21 +24,19 @@
             <div class="card bg-light mb-3">
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-list"></i> Magazines</div>
                 <ul class="list-group category_block">
-                    
-                    <li class="list-group-item"><a asp-controller="Magazine" asp-action="Index" asp-route-category="Gossip">Gossip</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">TV</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Koukos</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Entetainment</a></li>
-                    <li class="list-group-item"><a href="category.cshtml">Educational</a></li>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li class="list-group-item"><a asp-controller="Magazine" asp-action="Index" asp-route-category="@cat">@cat</a></li>
+                    }
                 </ul>
             </div>
         </div>
 
         <div class="col">
             <div class="row">
-                @foreach (var mag in Model)
+                @foreach (var mag in Model.Magazines)
                 {
-                    
+
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card">
                             <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
@@ -51,12 +48,12 @@
                                         <p class="btn btn-light btn-block">@(mag.Product.Price + " $")</p>
                                     </div>
                                     <div class="col">
-                                        <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id ="@mag.ProductId">
-                      
-                                            <input type="submit" value="Add to Cart"  class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i> 
-                                
+                                        <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@mag.ProductId">
+
+                                            <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
+
                                         </form>
-                                            @*<form asp-action="AddtoCart" asp-controller="Cart" input type="hidden" asp-for="ProductId"  class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i></form>*@
+                                        @*<form asp-action="AddtoCart" asp-controller="Cart" input type="hidden" asp-for="ProductId"  class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i></form>*@
                                     </div>
                                 </div>
                             </div>
