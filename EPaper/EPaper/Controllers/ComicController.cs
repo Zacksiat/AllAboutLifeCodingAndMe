@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EPaper.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class ComicController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,7 +21,7 @@ namespace EPaper.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string category)
+        public async Task<IActionResult> Index(string category,int page = 1)
         {
             ComicViewModel viewModel = new ComicViewModel();
             viewModel.Categories = await _context.Comics.Select(c => c.Category).Distinct().ToListAsync();
@@ -31,18 +32,20 @@ namespace EPaper.Controllers
                                             .Include(m => m.Product)
                                             .Where(p => p.Product.Available > 0)
                                             .ToListAsync();
+                viewModel.CurrentPage = page;
                 return View(viewModel);
             }
             else
             {
                 if (_context.Comics.Where(p => p.Category == category).Any())
                 {
-
+                    viewModel.CurrentCategory = category;
                     viewModel.Comics = await _context.Comics
                                                       .Include(m => m.Product)
                                                       .Where(p => p.Category == category &&
                                                              p.Product.Available > 0)
                                                              .ToListAsync();
+                    viewModel.CurrentPage = page;
                     return View(viewModel);
                 }
                 else
