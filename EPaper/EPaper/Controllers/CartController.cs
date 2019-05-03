@@ -141,41 +141,13 @@ namespace EPaper.Models
             return BadRequest();
         }
 
-        // GET: Basket / Delete / 5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return BadRequest();
-            }
-            Product product = _context.Products.Find(id);
-            if (User.Identity.IsAuthenticated)
-            {
-                string userId = GetUserId();
-                var cart = ProductIsInCart(id);
-
-                if (cart == null)
-                {
-                    return BadRequest();
-                }
-
-                return View(product);
-            }
-            else
-            {
-                List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
-                int index = isExist(id);
-                return View(product);
-            }
-
-        }
 
         // POST: Basket/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-
+         
             if (User.Identity.IsAuthenticated)
             {
                 string userId = GetUserId();
@@ -208,11 +180,13 @@ namespace EPaper.Models
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateQuantity([Bind("Quantity")]Cart cart)
+        public async Task<IActionResult> UpdateQuantity([Bind("Quantity,Id")]Cart cart)
         {
             if (ModelState.IsValid)
             {
-                _context.Carts.Update(cart);
+                var cartFromDb = _context.Carts.Find(cart.Id);
+                cartFromDb.Quantity = cart.Quantity; 
+                _context.Carts.Update(cartFromDb);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
