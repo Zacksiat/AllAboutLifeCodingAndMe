@@ -37,7 +37,7 @@
                             <td data-th="Price">@cart.Product.Price</td>
 
                             <td data-th="Quantity">
-                                <form asp-action="UpdateQuantity">
+                                <form asp-action="UpdateQuantity" class="update-form">
                                     <input asp-for="@cart.Quantity" class="form-control text-center" value="@cart.Quantity">
                                     <input type="hidden" asp-for="@cart.Id" />
                                     <span asp-validation-for="@cart.Quantity" class="text-danger"></span>

@@ -108,3 +108,6 @@ body {
     margin-right: 20px;
 }
 
+.update-form {
+    display: inline-flex;
+}
