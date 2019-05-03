@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using EPaper.Helpers;
 
 namespace EPaper.Models
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class BookController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,29 +22,33 @@ namespace EPaper.Models
             _context = context;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string category)
+        public async Task<IActionResult> Index(string category, int page = 1)
         {
             BookViewModel viewModel = new BookViewModel();
             viewModel.Categories = await _context.Books.Select(c => c.Category).Distinct().ToListAsync();
 
             if (category == null)
-            {
+            { 
+                
                 viewModel.Books = await _context.Books
                                             .Include(m => m.Product)
                                             .Where(p => p.Product.Available > 0)
                                             .ToListAsync();
+                viewModel.CurrentPage = page;
+
                 return View(viewModel);
             }
             else
             {
                 if (_context.Books.Where(p => p.Category == category).Any())
                 {
-
+                    viewModel.CurrentCategory = category;
                     viewModel.Books = await _context.Books
                                                       .Include(m => m.Product)
                                                       .Where(p => p.Category == category &&
                                                              p.Product.Available > 0)
                                                              .ToListAsync();
+                    viewModel.CurrentPage = page;
                     return View(viewModel);
                 }
                 else
@@ -53,10 +58,10 @@ namespace EPaper.Models
             }
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BookIndex()
-        { 
-            var applicationDbContext = _context.Books.Include(b=>b.Product);
+        {
+            var applicationDbContext = _context.Books.Include(b => b.Product);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -101,13 +106,13 @@ namespace EPaper.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
         {
-          
+
 
             if (ModelState.IsValid)
             {
                 try
                 {
-               
+
                     _context.Update(book);
                     await _context.SaveChangesAsync();
                 }
@@ -122,7 +127,7 @@ namespace EPaper.Models
                         throw;
                     }
                 }
-                return RedirectToAction("AdminIndex","Product");
+                return RedirectToAction("AdminIndex", "Product");
             }
             return View(book);
         }

@@ -11,7 +11,7 @@
         <div class="col">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="/Home/Index">Home</a></li> 
+                    <li class="breadcrumb-item"><a href="/Home/Index">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Magazines</li>
                 </ol>
             </nav>
@@ -34,7 +34,7 @@
 
         <div class="col">
             <div class="row">
-                @foreach (var mag in Model.Magazines)
+                @foreach (var mag in Model.PaginatedMagazines())
                 {
 
                     <div class="col-12 col-md-6 col-lg-4">
@@ -53,7 +53,7 @@
                                             <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
 
                                         </form>
-                                        @*<form asp-action="AddtoCart" asp-controller="Cart" input type="hidden" asp-for="ProductId"  class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i></form>*@
+
                                     </div>
                                 </div>
                             </div>
@@ -69,17 +69,13 @@
     <div class="col-12">
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
+                @for (int i = 1; i <= Model.PageCount(); i++)
+                {
+
+                    <li class="@(i == Model.CurrentPage ? "page-item active" : "page-item")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i,category = Model.CurrentCategory })">@i</a>
+                    </li>
+                }
             </ul>
         </nav>
     </div>

@@ -20,7 +20,7 @@ namespace EPaper.Models
             _context = context;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string category)
+        public async Task<IActionResult> Index(string category,int page = 1)
         {
             CdViewModel viewModel = new CdViewModel();
             viewModel.Categories = await _context.Cds.Select(c => c.Category).Distinct().ToListAsync();
@@ -31,18 +31,20 @@ namespace EPaper.Models
                                             .Include(m => m.Product)
                                             .Where(p => p.Product.Available > 0)
                                             .ToListAsync();
+                viewModel.CurrentPage = page;
                 return View(viewModel);
             }
             else
             {
                 if (_context.Cds.Where(p => p.Category == category).Any())
                 {
-
+                    viewModel.CurrentCategory = category;
                     viewModel.Cds = await _context.Cds
                                                       .Include(m => m.Product)
                                                       .Where(p => p.Category == category &&
                                                              p.Product.Available > 0)
                                                              .ToListAsync();
+                    viewModel.CurrentPage = page;
                     return View(viewModel);
                 }
                 else
