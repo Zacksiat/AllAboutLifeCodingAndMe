@@ -128,9 +128,9 @@ namespace EPaper.Models
 
         //GET:/Book/Edit/5
         [Authorize(Roles = "Admin")]
-        public IActionResult Edit(Product product)
+        public IActionResult Edit(int id)
         {
-            var book = _context.Books.Find(product.ProductId);
+            var book = _context.Books.Include(b => b.Product).Where(b => b.ProductId == id).FirstOrDefault() ;
             return View(book);
         }
 
@@ -138,16 +138,21 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Product,Product.Name,Product.Price")]Book book)
         {
-
-
             if (ModelState.IsValid)
             {
                 try
                 {
-
-                    _context.Update(book);
+                    var bookFromDb = _context.Books.Include(p => p.Product).Where(b => b.ProductId == book.ProductId).FirstOrDefault();
+                    bookFromDb.Author = book.Author;
+                    bookFromDb.Publisher = book.Publisher;
+                    bookFromDb.DatePublished = book.DatePublished;
+                    bookFromDb.Pages = book.Pages;
+                    bookFromDb.Category = book.Category;
+                    bookFromDb.Product.Name = book.Product.Name;
+                    bookFromDb.Product.Price = book.Product.Price;
+                    _context.Update(bookFromDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
