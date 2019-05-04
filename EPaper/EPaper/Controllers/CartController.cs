@@ -23,9 +23,23 @@ namespace EPaper.Models
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(CartViewModel cartModel)
         {
-            if (User.Identity.IsAuthenticated)
+            if (cartModel == null)
+                cartModel = new CartViewModel();
+
+            if (cartModel.EnablePopUpWarning)
+            {
+                var userId = GetUserId();
+
+                cartModel.Carts = _context.Carts
+                       .Include(p => p.Product)
+                       .Where(c => c.UserId == userId && c.OrderId == null)
+                       .ToList();
+
+                return View(cartModel);
+            }
+            else if (User.Identity.IsAuthenticated)
             {
                 string userId = GetUserId();
 
@@ -34,23 +48,22 @@ namespace EPaper.Models
                     .Where(c => c.UserId == userId && c.OrderId == null)
                     .ToList();
 
-                carts = FromSessionCartToUserCart(carts);
+                cartModel.Carts = FromSessionCartToUserCart(carts);
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
-            //    HttpContext.Session.Clear();
+                //    HttpContext.Session.Clear();
 
                 if (carts != null)
                 {
                     _context.SaveChanges();
-                    return View(carts);
+                    return View(cartModel);
                 }
                 else
                 {
-                    List<Cart> EmptyCart = new List<Cart>();
-                    return View(EmptyCart);
+                    cartModel = new CartViewModel();
+                    return View(cartModel);
                 }
 
             }
-
             else
             {
                 if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
@@ -64,12 +77,10 @@ namespace EPaper.Models
                     List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
                     ViewBag.cart = cart;
                     if (cart != null)
-                    {
                         ViewBag.total = cart.Sum(item => item.Product.Price * item.Quantity);
-                    }
                     SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
                 }
-                return View();
+                return View(cartModel);
             }
         }
 
@@ -87,7 +98,7 @@ namespace EPaper.Models
             int quantity = 1;
             if (product != null && CheckIfProductAvailable(id, quantity))
             {
-                
+
                 if (User.Identity.IsAuthenticated)
                 {
 
@@ -147,7 +158,7 @@ namespace EPaper.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-         
+
             if (User.Identity.IsAuthenticated)
             {
                 string userId = GetUserId();
@@ -180,7 +191,7 @@ namespace EPaper.Models
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateQuantity([Bind("Quantity,Id")]Cart cart,int id,int quantity)
+        public async Task<IActionResult> UpdateQuantity([Bind("Quantity,Id")]Cart cart, int id, int quantity)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -198,41 +209,47 @@ namespace EPaper.Models
             {
                 List<Item> sessionCart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
                 int index = isExist(id);
-                if (index != -1 )
+                if (index != -1)
                 {
                     sessionCart[index].Quantity = quantity;
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", sessionCart);
                 return RedirectToAction("Index");
             }
-         
+
         }
 
         // GET : /CheckOut
         [Authorize]
         public IActionResult CheckOut()
         {
+            CartViewModel cartModel = new CartViewModel();
             var userId = GetUserId();
-            List<Cart> carts = _context.Carts
+
+            cartModel.Carts = _context.Carts
                    .Include(p => p.Product)
                    .Where(c => c.UserId == userId && c.OrderId == null)
                    .ToList();
 
-            carts = FromSessionCartToUserCart(carts);
+            cartModel.Carts = FromSessionCartToUserCart(cartModel.Carts);
             SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
-            if (carts.Count > 0)
+            cartModel.UnavailableProducts = Helper.GetUnavailableProducts(_context, cartModel.Carts);
+
+            if (cartModel.UnavailableProducts.Count > 0 && cartModel.Carts.Count > 0)
+                cartModel.EnablePopUpWarning = true;
+            else
             {
-                foreach(var item in carts)
-                {
+                cartModel.EnablePopUpWarning = false;
+                foreach (var item in cartModel.Carts)
                     _context.Update(item);
-                }
-               
+
                 _context.SaveChanges();
-                double total = CountTotal(carts);
-               
+                double total = CountTotal(cartModel.Carts);
+
                 return View("~/Views/Payment/Create.cshtml");
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", cartModel);
+            TempData["cartModel"] = cartModel;
         }
 
         private string GetUserId()
@@ -287,22 +304,22 @@ namespace EPaper.Models
                     }
                 }
             }
-            return carts ;
+            return carts;
         }
 
         private double CountTotal(List<Cart> carts)
         {
             double total = 0;
-            foreach(var item in carts)
+            foreach (var item in carts)
             {
                 total += (item.Product.Price * item.Quantity);
             }
             return total;
         }
-       private bool CheckIfProductAvailable(int id,int quantity)
+        private bool CheckIfProductAvailable(int id, int quantity)
         {
-            Product product  = _context.Products.Find(id); 
-            if(product.Available >= quantity)
+            Product product = _context.Products.Find(id);
+            if (product.Available >= quantity)
             {
                 product.Available -= quantity;
                 _context.SaveChanges();

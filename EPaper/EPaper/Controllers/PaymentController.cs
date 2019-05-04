@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using EPaper.Data;
+using EPaper.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +41,7 @@ namespace EPaper.Models
                 {
                     return RedirectToAction("Index", "Cart");
                 }
-                if (GetUnavailableProducts(carts).Count == 0)
+                if (Helper.GetUnavailableProducts(_context, carts).Count == 0)
                 {
                     order.UserId = userId;
                     order.Payment.Total = CountTotal(userId);
@@ -100,22 +101,6 @@ namespace EPaper.Models
                 return userCarts;
             }
             return null;
-        }
-
-        private List<Product> GetUnavailableProducts(List<Cart> userCarts)
-        {
-
-            List<Product> unavailableProducts = new List<Product>();
-            foreach (var cart in userCarts)
-            {
-                var product = _context.Products.Where(p => p.ProductId == cart.ProductId).First();
-                if(product.Available < cart.Quantity)
-                {
-                    unavailableProducts.Add(product);
-                }
-            }
-
-            return unavailableProducts;
         }
 
         private void ReduceProductStock(List<Cart> userCarts)
