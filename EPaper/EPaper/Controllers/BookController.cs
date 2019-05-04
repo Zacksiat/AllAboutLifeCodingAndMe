@@ -236,5 +236,39 @@ namespace EPaper.Models
             return RedirectToAction("BookIndex");
         }
 
+
+        //GET:/Book/Details/6
+        [Authorize(Roles = "Admin")]
+        public IActionResult Details(Product product)
+        {
+            var book = _context.Books.Find(product.ProductId);
+            return View(book);
+        }
+
+        // POST:/Book/Details/7
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details ([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
+        {
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    _context.Update(book);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(book);
+        }
+        
     }
 }

@@ -196,5 +196,41 @@ namespace EPaper.Controllers
             return RedirectToAction("ComicIndex");
         }
 
+        //GET:/Comic/Details/6
+        [Authorize(Roles = "Admin")]
+        public IActionResult Details(Product product)
+        {
+            var comic = _context.Comics.Find(product.ProductId);
+            return View(comic);
+        }
+
+        // POST:/Comic/Details/7
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Publisher,Product")]Comic comic)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(comic);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ComicExists(comic.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(comic);
+        }
     }
 }

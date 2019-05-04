@@ -205,5 +205,44 @@ namespace EPaper.Models
             return _context.Products.Any(e => e.ProductId == id);
         }
 
+        //GET:/Magazine/Edit/6
+        [Authorize(Roles = "Admin")]
+        public IActionResult Details(Product product)
+        {
+            var magazine = _context.Magazines.Find(product.ProductId);
+            return View(magazine);
+        }
+
+        // POST:/Magazine/Details/7
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details([Bind("Genre,Publisher,DatePublished,Pages,Issue,Product")]Magazine magazine)
+        {
+
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(magazine);
+                    
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MagazineExists(magazine.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(magazine);
+        }
+
     }
 }

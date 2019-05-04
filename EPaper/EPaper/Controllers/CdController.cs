@@ -194,5 +194,43 @@ namespace EPaper.Models
             await _context.SaveChangesAsync();
             return RedirectToAction("CdIndex");
         }
+
+        //GET:/Cd/Details/6
+        [Authorize(Roles = "Admin")]
+        public IActionResult Details(Product product)
+        {
+            var cd = _context.Cds.Find(product.ProductId);
+            return View(cd);
+        }
+
+        // POST:/Cd/Details/7
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Details([Bind("ProductId,Artist,Label,NumberOfSongs,Product,Category")]Cd cd)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+
+                    _context.Update(cd);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CdExists(cd.ProductId))
+                    {
+                        return BadRequest();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AdminIndex", "Product");
+            }
+            return View(cd);
+        }
     }
     }

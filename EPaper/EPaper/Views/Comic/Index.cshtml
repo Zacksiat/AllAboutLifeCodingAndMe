@@ -53,6 +53,9 @@
                                     <div class="col">
                                         <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@comic.ProductId">
 
+                                            <a asp-action="Details" asp-controller="Comic" class="btn btn-success -right btn-outline-info" asp-route-id="@comic.Product.ProductId">View Details</a>
+
+
                                             <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
 
                                         </form>
