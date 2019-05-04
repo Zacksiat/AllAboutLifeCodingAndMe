@@ -138,20 +138,47 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Product,Product.Name,Product.Price")]Book book)
+        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Product,Product.Name,Product.Price,Product.Description")]Book book)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    
                     var bookFromDb = _context.Books.Include(p => p.Product).Where(b => b.ProductId == book.ProductId).FirstOrDefault();
+
                     bookFromDb.Author = book.Author;
                     bookFromDb.Publisher = book.Publisher;
-                    bookFromDb.DatePublished = book.DatePublished;
+                    bookFromDb.DatePublished = book.DatePublished; 
                     bookFromDb.Pages = book.Pages;
                     bookFromDb.Category = book.Category;
                     bookFromDb.Product.Name = book.Product.Name;
                     bookFromDb.Product.Price = book.Product.Price;
+                    bookFromDb.Product.Description = book.Product.Description;
+
+                    string webRootPath = _hostingEnvironment.WebRootPath;
+                    var files = HttpContext.Request.Form.Files;
+
+                    if (files.Count != 0)
+                    {
+                        var uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                        var extension = Path.GetExtension(files[0].FileName);
+
+                        using (var filestream = new FileStream(Path.Combine(uploads, book.Product.ProductId + extension), FileMode.Create))//rename the file to the productid /reacts the file to the server
+                        {
+                            files[0].CopyTo(filestream);//moves the file to the server and renames it
+                        }
+                        bookFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + book.Product.ProductId + extension;
+
+                    }
+                    else
+                    {
+                        var uploads = Path.Combine(webRootPath, SD.ImageFolder + @"\" + SD.DefaultProductImage);
+                        System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + book.Product.ProductId + ".png");
+                        bookFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + book.Product.ProductId + ".png";
+                    }
+               
+
                     _context.Update(bookFromDb);
                     await _context.SaveChangesAsync();
                 }
