@@ -216,8 +216,7 @@ namespace EPaper.Models
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", sessionCart);
                 return RedirectToAction("Index");
-            }
-
+            }     
         }
 
         // GET : /CheckOut
@@ -322,8 +321,7 @@ namespace EPaper.Models
             Product product = _context.Products.Find(id);
             if (product.Available >= quantity)
             {
-                product.Available -= quantity;
-                _context.SaveChanges();
+               
                 return true;
             }
             return false;
