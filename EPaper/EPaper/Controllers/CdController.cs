@@ -227,7 +227,7 @@ namespace EPaper.Models
         }
 
         //GET:/Cd/Details/6
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             var cd = _context.Cds.Include(c => c.Product).Where(c => c.ProductId == id).FirstOrDefault();

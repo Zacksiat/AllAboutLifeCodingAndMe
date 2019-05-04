@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EPaper.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class ComicController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,7 +26,7 @@ namespace EPaper.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string category,int page = 1)
+        public async Task<IActionResult> Index(string category, int page = 1)
         {
             ComicViewModel viewModel = new ComicViewModel();
             viewModel.Categories = await _context.Comics.Select(c => c.Category).Distinct().ToListAsync();
@@ -59,11 +59,11 @@ namespace EPaper.Controllers
                 }
             }
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ComicIndex()
         {
 
-            var applicationDbContext = _context.Comics.Include(c=>c.Product);
+            var applicationDbContext = _context.Comics.Include(c => c.Product);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -122,9 +122,9 @@ namespace EPaper.Controllers
 
         //GET:/Comic/Edit/5
         [Authorize(Roles = "Admin")]
-        public IActionResult Edit(Product product)
+        public IActionResult Edit(int id)
         {
-            var comic = _context.Comics.Find(product.ProductId);
+            var comic = _context.Comics.Include(c => c.Product).Where(c => c.ProductId == id).FirstOrDefault();
             return View(comic);
         }
 
@@ -132,15 +132,51 @@ namespace EPaper.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Publisher,Product")]Comic comic)
+        public async Task<IActionResult> Edit([Bind("Author,Publisher,DatePublished,Category,Pages,Product,ProductId,Product.Name,Product.Price,Product.Description,Product.Available")]Comic comic)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(comic);
+                    var comicFromDb = _context.Comics.Include(p => p.Product).Where(b => b.ProductId == comic.ProductId).FirstOrDefault();
+
+                    comicFromDb.Author = comic.Author;
+                    comicFromDb.Publisher = comic.Publisher;
+                    comicFromDb.DatePublished = comic.DatePublished;
+                    comicFromDb.Pages = comic.Pages;
+                    comicFromDb.Category = comic.Category;
+                    comicFromDb.Product.Name = comic.Product.Name;
+                    comicFromDb.Product.Price = comic.Product.Price;
+                    comicFromDb.Product.Description = comic.Product.Description;
+                    comicFromDb.Product.Available = comic.Product.Available;
+
+                    string webRootPath = _hostingEnvironment.WebRootPath;
+                    var files = HttpContext.Request.Form.Files;
+
+                    if (files.Count != 0)
+                    {
+                        var uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                        var extension = Path.GetExtension(files[0].FileName);
+
+                        using (var filestream = new FileStream(Path.Combine(uploads, comic.Product.ProductId + extension), FileMode.Create))//rename the file to the productid /reacts the file to the server
+                        {
+                            files[0].CopyTo(filestream);//moves the file to the server and renames it
+                        }
+                        comicFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + comic.Product.ProductId + extension;
+
+                    }
+                    else
+                    {
+                        var uploads = Path.Combine(webRootPath, SD.ImageFolder + @"\" + SD.DefaultProductImage);
+                        System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + comic.Product.ProductId + ".png");
+                        comicFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + comic.Product.ProductId + ".png";
+                    }
+
+
+                    _context.Update(comicFromDb);
                     await _context.SaveChangesAsync();
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ComicExists(comic.ProductId))
@@ -197,40 +233,14 @@ namespace EPaper.Controllers
         }
 
         //GET:/Comic/Details/6
-        [Authorize(Roles = "Admin")]
-        public IActionResult Details(Product product)
+        [AllowAnonymous]
+        public IActionResult Details(int id)
         {
-            var comic = _context.Comics.Find(product.ProductId);
+            var comic = _context.Comics.Include(p => p.Product).Where(p => p.ProductId == id).FirstOrDefault();
             return View(comic);
         }
 
-        // POST:/Comic/Details/7
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details([Bind("ProductId,Genre,Artist,Label,NumberOfSongs,Publisher,Product")]Comic comic)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(comic);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ComicExists(comic.ProductId))
-                    {
-                        return BadRequest();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("AdminIndex", "Product");
-            }
-            return View(comic);
-        }
+
+
     }
 }
