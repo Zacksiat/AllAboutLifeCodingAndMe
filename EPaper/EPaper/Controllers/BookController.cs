@@ -138,7 +138,7 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Product,Product.Name,Product.Price,Product.Description")]Book book)
+        public async Task<IActionResult> Edit([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Product,Product.Name,Product.Price,Product.Description,product.Available")]Book book)
         {
             if (ModelState.IsValid)
             {
@@ -155,6 +155,7 @@ namespace EPaper.Models
                     bookFromDb.Product.Name = book.Product.Name;
                     bookFromDb.Product.Price = book.Product.Price;
                     bookFromDb.Product.Description = book.Product.Description;
+                    bookFromDb.Product.Available = book.Product.Available;
 
                     string webRootPath = _hostingEnvironment.WebRootPath;
                     var files = HttpContext.Request.Form.Files;

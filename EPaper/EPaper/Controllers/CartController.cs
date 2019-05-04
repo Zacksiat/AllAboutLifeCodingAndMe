@@ -303,8 +303,7 @@ namespace EPaper.Models
             Product product  = _context.Products.Find(id); 
             if(product.Available >= quantity)
             {
-                product.Available -= quantity;
-                _context.SaveChanges();
+               
                 return true;
             }
             return false;
