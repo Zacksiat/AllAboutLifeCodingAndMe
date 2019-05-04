@@ -240,9 +240,9 @@ namespace EPaper.Models
 
         //GET:/Book/Details/6
         [Authorize(Roles = "Admin")]
-        public IActionResult Details(Product product)
+        public IActionResult Details(int id)
         {
-            var book = _context.Books.Find(product.ProductId);
+            var book = _context.Books.Include(b=>b.Product).Where(b=>b.ProductId == id).FirstOrDefault();
             return View(book);
         }
 
