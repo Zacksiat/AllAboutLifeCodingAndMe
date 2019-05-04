@@ -23,20 +23,11 @@
 
         </div>
         <div class="form-group row">
-            <div class="col-2">
+            <div class="col-4">
                 <label asp-for="Category"></label>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <input asp-for="Category" class="form-control" />
-            </div>
-
-        </div>
-        <div class="form-group row">
-            <div class="col-2">
-                <label asp-for="DatePublished"></label>
-            </div>
-            <div class="col-5">
-                <input asp-for="DatePublished" class="form-control" />
             </div>
 
         </div>
@@ -52,20 +43,20 @@
         </div>
 
         <div class="form-group row">
-            <div class="col-2">
+            <div class="col-4">
                 <label asp-for="Issue"></label>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <input asp-for="Issue" class="form-control" />
             </div>
 
         </div>
 
         <div class="form-group row">
-            <div class="col-2">
+            <div class="col-4">
                 <label asp-for="Publisher"></label>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <input asp-for="Publisher" class="form-control" />
             </div>
 
@@ -89,7 +80,7 @@
                 <label asp-for="Product.Available"></label>
             </div>
             <div class="col-8">
-                <input type="checkbox" readonly class="form-control" asp-for="Product.Available" />
+                
             </div>
 
         </div>
@@ -106,8 +97,7 @@
 
     <br />
     <div class="form-group">
-        <a asp-action="Edit" class="btn btn-primary" asp-route-id="Product.ProductId">Edit</a>
-        <a asp-action="Index" class="btn btn-success">Back to List</a>
+        <a asp-action="Index" class="btn btn-success">Back to Magazines</a>
     </div>
 
 </div>

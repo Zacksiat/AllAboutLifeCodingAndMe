@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - EPaper</title>
 
     <environment include="Development">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -47,7 +48,7 @@
             </ul>
         </div>
 
-        <a href="@Url.Action("Index", "Cart")" class="fa fa-cart-plus my-cart"></a>
+        <a href="@Url.Action("Index", "Cart")" class="fa fa-opencart fa-2x my-cart"></a>
 
         <div>
             <partial name="_LoginPartial" />
@@ -62,7 +63,7 @@
         @RenderBody()
 
 
-        <div class="row footer-bg">
+        <div class="row footer-bg bg-dark">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-4">
@@ -110,7 +111,12 @@
             <script src="~/js/site.min.js" asp-append-version="true"></script>
         </environment>
 
-        @RenderSection("Scripts", required: false)
         @RenderSection("MyScripts", required: false)
+        @RenderSection("Scripts", required: false)
+
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 ﻿
 @model EPaper.Models.Book
-@*
-@using EPaper.Extensions
-    *@
+@{ 
+    ViewData["Title"] = "Details";
+}
 
 
 <br />
@@ -22,10 +22,10 @@
 
         </div>
         <div class="form-group row">
-            <div class="col-2">
+            <div class="col-4">
                 <label asp-for="Category"></label>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <input asp-for="Category" class="form-control" />
             </div>
 
@@ -42,20 +42,20 @@
         </div>
 
         <div class="form-group row">
-            <div class="col-2">
+            <div class="col-4">
                 <label asp-for="Author"></label>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <input asp-for="Author" class="form-control" />
             </div>
 
         </div>
 
         <div class="form-group row">
-            <div class="col-2">
+            <div class="col-4">
                 <label asp-for="Publisher"></label>
             </div>
-            <div class="col-5">
+            <div class="col-8">
                 <input asp-for="Publisher" class="form-control" />
             </div>
           
@@ -73,15 +73,15 @@
             </div>
         </div>
 
-       
+      
         <div class="form-group row">
             <div class="col-4">
                 <label asp-for="Product.Available"></label>
             </div>
             <div class="col-8">
-                <input type="checkbox" readonly class="form-control" asp-for="Product.Available" />
+                
             </div>
-
+          
         </div>
     </div>
 
@@ -96,8 +96,7 @@
 
     <br />
     <div class="form-group">
-        <a asp-action="Edit" class="btn btn-primary" asp-route-id="Product.ProductId">Edit</a>
-        <a asp-action="Index" class="btn btn-success">Back to List</a>
+        <a asp-action="Index" class="btn btn-success">Back to Books</a>
     </div>
 
 </div>

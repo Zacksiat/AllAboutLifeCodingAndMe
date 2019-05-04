@@ -42,7 +42,7 @@
 
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card">
-                            <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
+                            <img src="@comic.Product.Image" style="border-radius:5px; border:1px solid #bbb9b9;width:100% !important;" />
                             <div class="card-body">
                                 <h4 class="card-title"><a href="product.cshtml" title="View Product">@comic.Product.Name</a></h4>
                                 <p class="card-text">@comic.Product.Description</p>
@@ -52,6 +52,9 @@
                                     </div>
                                     <div class="col">
                                         <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@comic.ProductId">
+
+                                            <a asp-action="Details" asp-controller="Comic" class="btn btn-success -right btn-outline-info" asp-route-id="@comic.Product.ProductId">View Details</a>
+
 
                                             <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
 
