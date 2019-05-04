@@ -180,17 +180,32 @@ namespace EPaper.Models
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateQuantity([Bind("Quantity,Id")]Cart cart)
+        public async Task<IActionResult> UpdateQuantity([Bind("Quantity,Id")]Cart cart,int id,int quantity)
         {
-            if (ModelState.IsValid)
+            if (User.Identity.IsAuthenticated)
             {
-                var cartFromDb = _context.Carts.Find(cart.Id);
-                cartFromDb.Quantity = cart.Quantity; 
-                _context.Carts.Update(cartFromDb);
-                await _context.SaveChangesAsync();
+                if (ModelState.IsValid)
+                {
+                    var cartFromDb = _context.Carts.Find(cart.Id);
+                    cartFromDb.Quantity = cart.Quantity;
+                    _context.Carts.Update(cartFromDb);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                return BadRequest();
+            }
+            else
+            {
+                List<Item> sessionCart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+                int index = isExist(id);
+                if (index != -1 )
+                {
+                    sessionCart[index].Quantity = quantity;
+                }
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", sessionCart);
                 return RedirectToAction("Index");
             }
-            return BadRequest();
+         
         }
 
         // GET : /CheckOut

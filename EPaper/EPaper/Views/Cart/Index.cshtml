@@ -47,16 +47,14 @@
                             <td data-th="Subtotal" class="text-center">@(cart.Product.Price * cart.Quantity)</td>
                             <td class="actions" data-th="">
 
-                              
+
 
 
                                 <form asp-action="Delete" asp-route-id="@cart.Product.ProductId" method="post">
                                     <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
                                 </form>
-
                             </td>
                         </div>
-
                     </tr>
                     total += (cart.Product.Price * cart.Quantity);
                 }
@@ -78,16 +76,26 @@
                                 </div>
                             </td>
                             <td data-th="Price">@item.Product.Price</td>
+
                             <td data-th="Quantity">
-                                <input type="number" class="form-control text-center" value="@item.Quantity">
+                                <form asp-action="UpdateQuantity" asp-route-id="@item.Product.ProductId" asp-route-quantity="@item.Quantity" class="update-form">
+
+                                    <input type="number" class="form-control text-center" name="quantity" value="@item.Quantity">
+                                    
+                                    <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
+                                </form>
                             </td>
                             <td data-th="Subtotal" class="text-center">@(item.Product.Price * item.Quantity)</td>
                             <td class="actions" data-th="">
-                                <button class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
-                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+
+
+
+
+                                <form asp-action="Delete" asp-route-id="@item.Product.ProductId" method="post">
+                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+                                </form>
                             </td>
                         </div>
-
                     </tr>
                     total += (item.Product.Price * item.Quantity);
                 }
