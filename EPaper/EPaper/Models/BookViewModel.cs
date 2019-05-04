@@ -18,7 +18,7 @@ namespace EPaper.Models
 
         public int PageCount()
         {
-           return Convert.ToInt32(Math.Ceiling(Books.Where(p => p.Product.Available > 0).Count() / (double)Constants.PRODUCTS_PER_PAGE));
+            return Convert.ToInt32(Math.Ceiling(Books.Where(p => p.Product.Available > 0).Count() / (double)Constants.PRODUCTS_PER_PAGE));
 
         }
         public List<Book> PaginatedBooks()
