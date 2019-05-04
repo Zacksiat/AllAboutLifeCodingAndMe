@@ -36,6 +36,7 @@ namespace EPaper.Models
                        .Include(p => p.Product)
                        .Where(c => c.UserId == userId && c.OrderId == null)
                        .ToList();
+                cartModel.UnavailableProducts = Helper.GetUnavailableProducts(_context, cartModel.Carts);
 
                 return View(cartModel);
             }

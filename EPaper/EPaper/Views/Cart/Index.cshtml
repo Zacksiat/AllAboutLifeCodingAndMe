@@ -14,14 +14,17 @@
 
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Modal Header</h4>
+                    <h5 class="modal-title">INFO MESSAGE</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Some text in the modal.</p>
+                    <p>Unfortunately we do not have the quantity you requested :( <br /><u>In the following products: </u></p>
+
+                    @foreach (var unavailableProduct in Model.UnavailableProducts)
+                    {
+                        <p><b>- @unavailableProduct.Name</b></p>
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
