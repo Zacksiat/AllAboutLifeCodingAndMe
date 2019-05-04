@@ -113,10 +113,6 @@ body {
     color: white;
 }
 
-.my-cart:hover {
-    color: #e51b23;
-}
-
 .update-form {
     display: inline-flex;
 }
@@ -282,6 +278,7 @@ body {
 
 a:hover {
     text-decoration: none;
+    color: #e51b23;
 }
 
 .navbar-dark .navbar-nav .nav-link {
@@ -305,3 +302,41 @@ a:hover {
     background-position: right bottom !important;
     transition: all 1s ease;
 }
+
+.my-red {
+    color: #e51b23;
+}
+
+.my-btn-red {
+    background-color: #e51b23;
+    border-color: #e51b23;
+    color: white;
+    position: relative;
+    border-radius: 0;
+}
+
+    .my-btn-red:hover {
+        background-color: white;
+        color: #e51b23;
+    }
+
+    .my-btn-red:after {
+        background-color: #e51b23;
+        -webkit-transition: width 1s ease-in-out;
+        transition: width 1s ease-in-out;
+        position: absolute;
+        display: block;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        content: "";
+    }
+
+    .my-btn-red:hover:after {
+        width: 100%;
+    }
+
+    .white {
+        color: white;
+    }
