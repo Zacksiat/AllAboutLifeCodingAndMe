@@ -239,35 +239,10 @@ namespace EPaper.Models
 
 
         //GET:/Book/Details/6
-        [Authorize(Roles = "Admin")]
-        public IActionResult Details(Product product)
+        [AllowAnonymous]
+        public IActionResult Details(int id)
         {
-            var book = _context.Books.Find(product.ProductId);
-            return View(book);
-        }
-
-        // POST:/Book/Details/7
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details ([Bind("ProductId,Author,Publisher,DatePublished,Pages,Category,Name,Price")]Book book)
-        {
-
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    
-                }
-                return RedirectToAction("AdminIndex", "Product");
-            }
+            var book = _context.Books.Include(b => b.Product).Where(b => b.ProductId == id).FirstOrDefault() ;
             return View(book);
         }
         

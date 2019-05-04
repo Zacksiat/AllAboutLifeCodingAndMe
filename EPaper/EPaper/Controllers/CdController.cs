@@ -25,7 +25,7 @@ namespace EPaper.Models
             _hostingEnvironment = hostingEnvironment;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string category,int page = 1)
+        public async Task<IActionResult> Index(string category, int page = 1)
         {
             CdViewModel viewModel = new CdViewModel();
             viewModel.Categories = await _context.Cds.Select(c => c.Category).Distinct().ToListAsync();
@@ -120,9 +120,9 @@ namespace EPaper.Models
 
         //GET:/Cd/Edit/5
         [Authorize(Roles = "Admin")]
-        public IActionResult Edit(Product product)
+        public IActionResult Edit(int id)
         {
-            var cd = _context.Cds.Find(product.ProductId);
+            var cd = _context.Cds.Include(c => c.Product).Where(c => c.ProductId == id).FirstOrDefault();
             return View(cd);
         }
 
@@ -130,14 +130,45 @@ namespace EPaper.Models
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("ProductId,Artist,Label,NumberOfSongs,Product,Category")]Cd cd)
+        public async Task<IActionResult> Edit([Bind("ProductId,Artist,Label,NumberOfSongs,Product,Category,Product.Name,Product.Price,Product.Description")]Cd cd)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var cdFromDb = _context.Cds.Include(p => p.Product).Where(b => b.ProductId == cd.ProductId).FirstOrDefault();
+                    cdFromDb.Artist = cd.Artist;
+                    cdFromDb.Label = cd.Label;
+                    cdFromDb.NumberOfSongs = cd.NumberOfSongs;
+                    cdFromDb.Product.Name = cd.Product.Name;
+                    cdFromDb.Product.Price = cd.Product.Price;
+                    cdFromDb.Product.Description = cd.Product.Description;
+                    cdFromDb.Product.Available = cd.Product.Available;
+                    cdFromDb.Category = cd.Category;
+                    string webRootPath = _hostingEnvironment.WebRootPath;
+                    var files = HttpContext.Request.Form.Files;
 
-                    _context.Update(cd);
+                    if (files.Count != 0)
+                    {
+                        var uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                        var extension = Path.GetExtension(files[0].FileName);
+
+                        using (var filestream = new FileStream(Path.Combine(uploads, cd.Product.ProductId + extension), FileMode.Create))//rename the file to the productid /reacts the file to the server
+                        {
+                            files[0].CopyTo(filestream);//moves the file to the server and renames it
+                        }
+                        cdFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + cd.Product.ProductId + extension;
+
+                    }
+                    else
+                    {
+                        var uploads = Path.Combine(webRootPath, SD.ImageFolder + @"\" + SD.DefaultProductImage);
+                        System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + cd.Product.ProductId + ".png");
+                        cdFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + cd.Product.ProductId + ".png";
+                    }
+
+
+                    _context.Update(cdFromDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -197,40 +228,12 @@ namespace EPaper.Models
 
         //GET:/Cd/Details/6
         [Authorize(Roles = "Admin")]
-        public IActionResult Details(Product product)
+        public IActionResult Details(int id)
         {
-            var cd = _context.Cds.Find(product.ProductId);
+            var cd = _context.Cds.Include(c => c.Product).Where(c => c.ProductId == id).FirstOrDefault();
             return View(cd);
         }
 
-        // POST:/Cd/Details/7
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details([Bind("ProductId,Artist,Label,NumberOfSongs,Product,Category")]Cd cd)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
 
-                    _context.Update(cd);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CdExists(cd.ProductId))
-                    {
-                        return BadRequest();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("AdminIndex", "Product");
-            }
-            return View(cd);
-        }
     }
-    }
+}
