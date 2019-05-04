@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using EPaper.Data;
 using EPaper.Models;
+using EPaper.SSD;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +17,12 @@ namespace EPaper.Models
     public class CdController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly HostingEnvironment _hostingEnvironment;
 
-        public CdController(ApplicationDbContext context)
+        public CdController(ApplicationDbContext context, HostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
         [AllowAnonymous]
         public async Task<IActionResult> Index(string category,int page = 1)
@@ -79,6 +84,32 @@ namespace EPaper.Models
             {
                 cd.Product.Type = "Cd";
                 await _context.AddAsync(cd);
+                await _context.SaveChangesAsync();
+
+                //IMAGE
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                var files = HttpContext.Request.Form.Files;
+
+
+                var cdFromDb = _context.Cds.Find(cd.Product.ProductId);
+                if (files.Count != 0)
+                {
+                    var uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                    var extension = Path.GetExtension(files[0].FileName);
+
+                    using (var filestream = new FileStream(Path.Combine(uploads, cd.Product.ProductId + extension), FileMode.Create))//rename the file to the productid /reacts the file to the server
+                    {
+                        files[0].CopyTo(filestream);//moves the file to the server and renames it
+                    }
+                    cdFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + cd.Product.ProductId + extension;
+
+                }
+                else
+                {
+                    var uploads = Path.Combine(webRootPath, SD.ImageFolder + @"\" + SD.DefaultProductImage);
+                    System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + cd.Product.ProductId + ".png");
+                    cdFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + cd.Product.ProductId + ".png";
+                }
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("AdminIndex", "Product");

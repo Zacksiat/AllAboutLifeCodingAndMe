@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using EPaper.Data;
 using EPaper.Models;
+using EPaper.SSD;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,10 +17,12 @@ namespace EPaper.Controllers
     public class ComicController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly HostingEnvironment _hostingEnvironment;
 
-        public ComicController(ApplicationDbContext context)
+        public ComicController(ApplicationDbContext context, HostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [AllowAnonymous]
@@ -81,6 +86,33 @@ namespace EPaper.Controllers
                 comic.Product.Type = "Comic";
                 await _context.AddAsync(comic);
                 await _context.SaveChangesAsync();
+
+
+                //IMAGE
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                var files = HttpContext.Request.Form.Files;
+
+                var comicFromDb = _context.Comics.Find(comic.Product.ProductId);
+                if (files.Count != 0)
+                {
+                    var uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                    var extension = Path.GetExtension(files[0].FileName);
+
+                    using (var filestream = new FileStream(Path.Combine(uploads, comic.Product.ProductId + extension), FileMode.Create))//rename the file to the productid /reacts the file to the server
+                    {
+                        files[0].CopyTo(filestream);//moves the file to the server and renames it
+                    }
+                    comicFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + comic.Product.ProductId + extension;
+
+                }
+                else
+                {
+                    var uploads = Path.Combine(webRootPath, SD.ImageFolder + @"\" + SD.DefaultProductImage);
+                    System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + comic.Product.ProductId + ".png");
+                    comicFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + comic.Product.ProductId + ".png";
+                }
+                await _context.SaveChangesAsync();
+
 
                 return RedirectToAction("AdminIndex", "Product");
             }

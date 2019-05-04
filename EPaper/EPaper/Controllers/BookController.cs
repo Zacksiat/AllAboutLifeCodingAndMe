@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EPaper.Helpers;
+using Microsoft.AspNetCore.Hosting.Internal;
+using System.IO;
+using EPaper.SSD;
 
 namespace EPaper.Models
 {
@@ -16,10 +19,13 @@ namespace EPaper.Models
     public class BookController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly HostingEnvironment _hostingEnvironment;
 
-        public BookController(ApplicationDbContext context)
+        public BookController(ApplicationDbContext context, HostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
+
         }
         [AllowAnonymous]
         public async Task<IActionResult> Index(string category, int page = 1)
@@ -83,8 +89,36 @@ namespace EPaper.Models
             {
 
                 book.Product.Type = "Book";
+
                 await _context.AddAsync(book);
                 await _context.SaveChangesAsync();
+
+                //IMAGE
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                var files = HttpContext.Request.Form.Files;
+
+                var bookFromDb = _context.Books.Find(book.Product.ProductId);
+
+                if (files.Count != 0)
+                {
+                    var uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                    var extension = Path.GetExtension(files[0].FileName);
+
+                    using (var filestream = new FileStream(Path.Combine(uploads, book.Product.ProductId + extension), FileMode.Create))//rename the file to the productid /reacts the file to the server
+                    {
+                        files[0].CopyTo(filestream);//moves the file to the server and renames it
+                    }
+                    bookFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + book.Product.ProductId + extension;
+
+                }
+                else
+                {
+                    var uploads = Path.Combine(webRootPath, SD.ImageFolder + @"\" + SD.DefaultProductImage);
+                    System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + book.Product.ProductId + ".png");
+                    bookFromDb.Product.Image = @"\" + SD.ImageFolder + @"\" + book.Product.ProductId + ".png";
+                }
+                await _context.SaveChangesAsync();
+
 
                 return RedirectToAction("AdminIndex", "Product");
             }
