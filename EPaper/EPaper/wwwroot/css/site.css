@@ -381,7 +381,7 @@ a:hover {
 
 .card img {
     object-fit: cover;
-    object-position: left;
+    object-position: center;
     max-height: 173px;
 }
 /*image finish*/
