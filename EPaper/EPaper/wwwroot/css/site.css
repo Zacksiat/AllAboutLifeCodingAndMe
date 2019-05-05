@@ -385,3 +385,8 @@ a:hover {
     max-height: 173px;
 }
 /*image finish*/
+
+p.card-text {
+    max-height: 20px;
+    overflow: hidden;
+}
