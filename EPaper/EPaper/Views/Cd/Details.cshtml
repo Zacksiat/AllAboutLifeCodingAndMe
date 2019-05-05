@@ -29,7 +29,11 @@
         <p class="pro">Author<span class="pros">@Model.Artist</span></p>
         <p class="pro">Publisher<span class="pros">@Model.Label</span></p>
         <div class="col-3">
-            <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
+            <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@Model.ProductId">
+
+                <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
+
+            </form>
         </div>
 
     </div>

@@ -29,10 +29,14 @@
         <p class="pro">Author<span class="pros">@Model.Author</span></p>
         <p class="pro">Publisher<span class="pros">@Model.Publisher</span></p>
         <p class="pro">Pages<span class="pros">@Model.Pages</span></p>
+   
         <div class="col-3">
-            <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
-        </div>
+            <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@Model.ProductId">
+              
+                <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
 
+            </form>
+        </div>
     </div>
     <br />
     <br />
@@ -68,18 +72,18 @@
 
 @section MyScripts {
     <script type="text/javascript">
-                $(document).ready(function () {
-                    /* show lightbox when clicking a thumbnail */
-                    $('a.thumb').click(function (event) {
-                        event.preventDefault();
-                        var content = $('.modal-body');
-                        content.empty();
-                        var title = $(this).attr("title");
-                        $('.modal-title').html(title);
-                        content.html($(this).html());
-                        $(".modal-profile").modal({ show: true });
-                    });
+        $(document).ready(function () {
+            /* show lightbox when clicking a thumbnail */
+            $('a.thumb').click(function (event) {
+                event.preventDefault();
+                var content = $('.modal-body');
+                content.empty();
+                var title = $(this).attr("title");
+                $('.modal-title').html(title);
+                content.html($(this).html());
+                $(".modal-profile").modal({ show: true });
+            });
 
-                });
+        });
     </script>
 }
