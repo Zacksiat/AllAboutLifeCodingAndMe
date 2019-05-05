@@ -5,11 +5,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using EPaper.Data;
 using EPaper.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EPaper.Models
 {
+    [Authorize]
     public class PaymentController : Controller
     {
 
