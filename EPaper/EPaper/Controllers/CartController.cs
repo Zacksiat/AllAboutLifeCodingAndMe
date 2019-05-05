@@ -249,7 +249,6 @@ namespace EPaper.Models
                 return View("~/Views/Payment/Create.cshtml");
             }
             return RedirectToAction("Index", cartModel);
-            TempData["cartModel"] = cartModel;
         }
 
         private string GetUserId()
