@@ -1,0 +1,100 @@
+﻿
+@model IEnumerable<EPaper.Models.Comic>
+
+@{
+    ViewData["Title"] = "ComicIndex";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Comics Page</h2>
+<br /> </br>
+<body>
+    <div class="row">
+        <div class="col-6  text-left">
+            <a asp-action="Create" class="btn btn-info"><i class="fas fa-plus"></i>&nbsp;New Comic</a>
+        </div>
+    </div>
+    <br />
+    <div>
+        <table class="table table-striped border">
+            <tr class="table-info">
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.Name)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pages)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Author)
+
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Publisher)
+
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.DatePublished)
+
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(m => m.Product.Available)
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Category)
+
+                </td>
+
+                <td>
+                    @Html.DisplayFor(m => item.Product.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Pages)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Author)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(m => item.Publisher)
+
+                </td>
+
+                <td>
+                    @Html.DisplayFor(mo => item.DatePublished)
+
+                </td>
+
+                <td>
+                    @Html.DisplayFor(m => item.Product.Available)
+                </td>
+
+                <td>
+                    <partial name="_TableButtonPartial" model="item.ProductId" />
+                </td>
+
+
+            </tr>
+            }
+        </table>
+    </div>
+
+</body>
+

@@ -1,7 +1,36 @@
-﻿
+﻿@model EPaper.Models.Order
 @{
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
+<h2>CheckOut</h2>
+
+<form asp-action="Create" asp-controller="Payment" method="post" enctype="multipart/form-data">
+    <div class="p-4 border rounded">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <div class="col-4">
+                <label asp-for="Payment.PaymentMethod"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Payment.PaymentMethod" class="form-control" />
+            </div>
+            <span asp-validation-for="Payment.PaymentMethod" class="text-danger"></span>
+
+            <div class="col-4">
+                <label asp-for="Address"></label>
+            </div>
+            <div class="col-8">
+                <input asp-for="Address" class="form-control" />
+            </div>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <br />
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Submit" />
+        </div>
+    </div>
+</form>
+
 

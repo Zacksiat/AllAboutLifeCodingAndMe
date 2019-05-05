@@ -23,31 +23,54 @@ namespace EPaper.Models
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(CartViewModel cartModel)
         {
-            if (User.Identity.IsAuthenticated)
+            if (cartModel == null)
+                cartModel = new CartViewModel();
+
+            if (cartModel.EnablePopUpWarning)
+            {
+                var userId = GetUserId();
+
+                cartModel.Carts = _context.Carts
+                       .Include(p => p.Product)
+                       .Where(c => c.UserId == userId && c.OrderId == null)
+                       .ToList();
+                cartModel.UnavailableProducts = Helper.GetUnavailableProducts(_context, cartModel.Carts);
+
+                return View(cartModel);
+            }
+            else if (User.Identity.IsAuthenticated)
             {
                 string userId = GetUserId();
+
                 List<Cart> carts = _context.Carts
                     .Include(p => p.Product)
                     .Where(c => c.UserId == userId && c.OrderId == null)
                     .ToList();
-         //       carts.Add(new Cart() { Quantity = 2 });
+
+                cartModel.Carts = FromSessionCartToUserCart(carts);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
+                //    HttpContext.Session.Clear();
+
                 if (carts != null)
                 {
-                    return View(carts);
+                    _context.SaveChanges();
+                    return View(cartModel);
                 }
                 else
                 {
-                    return View();
+                    cartModel = new CartViewModel();
+                    return View(cartModel);
                 }
 
             }
             else
             {
-                if(SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
+                if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
                 {
                     List<Item> cart = new List<Item>();
+                    ViewBag.cart = cart;
                     SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
                 }
                 else
@@ -55,28 +78,11 @@ namespace EPaper.Models
                     List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
                     ViewBag.cart = cart;
                     if (cart != null)
-                    {
                         ViewBag.total = cart.Sum(item => item.Product.Price * item.Quantity);
-                    }
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
                 }
-                return View();
+                return View(cartModel);
             }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AddtoCart(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var product = await _context.Products
-               .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
         }
 
         /// <summary>
@@ -87,83 +93,66 @@ namespace EPaper.Models
         [HttpPost]
         [ActionName("AddtoCart")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddtoCart([Bind("Id")] Product product)
+        public async Task<IActionResult> AddtoCart(int id)
         {
-
-            if (User.Identity.IsAuthenticated)
+            var product = _context.Products.Find(id);
+            int quantity = 1;
+            if (product != null && CheckIfProductAvailable(id, quantity))
             {
 
-                string userId = GetUserId();
-                Cart cart = ProductIsInCart(product.ProductId);
+                if (User.Identity.IsAuthenticated)
+                {
 
-                if (cart != null)
-                {
-                    ++cart.Quantity;
-                }
-                else
-                {
-                    cart.UserId = userId;
-                    cart.ProductId = product.ProductId;
-                    cart.Quantity = 1;
-                    _context.Carts.Add(cart);
-                }
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
-                {
-                    List<Item> cart = new List<Item>();
-                    cart.Add(new Item { Product = _context.Products.Find(product.ProductId), Quantity = 1 });
-                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-                }
-                else
-                {
-                    List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
-                    int index = isExist(product.ProductId);
-                    if (index != -1)
+                    string userId = GetUserId();
+
+
+                    if (ProductIsInCart(product.ProductId) != null)
                     {
-                        cart[index].Quantity++;
+                        Cart cart = ProductIsInCart(product.ProductId);
+                        ++cart.Quantity;
                     }
                     else
                     {
-                        cart.Add(new Item { Product = _context.Products.Find(product.ProductId), Quantity = 1 });
+                        Cart cart = new Cart
+                        {
+                            UserId = userId,
+                            ProductId = product.ProductId,
+                            Quantity = 1
+                        };
+
+                        _context.Carts.Add(cart);
                     }
-                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                    await _context.SaveChangesAsync();
                 }
-                return RedirectToAction("Index","Products");
-            }
-            return RedirectToAction("Index", "Products");
-        }
-
-        // GET: Basket / Delete / 5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            Product product = _context.Products.Find(id);
-            if (User.Identity.IsAuthenticated)
-            {
-                string userId = GetUserId();
-                var cart = ProductIsInCart(id);
-
-                if (cart == null)
+                else
                 {
-                    return NotFound();
+                    if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
+                    {
+                        List<Item> cart = new List<Item>();
+                        cart.Add(new Item { Product = _context.Products.Find(product.ProductId), Quantity = 1 });
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                    }
+                    else
+                    {
+                        List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+                        int index = isExist(product.ProductId);
+                        if (index != -1)
+                        {
+                            cart[index].Quantity++;
+                        }
+                        else
+                        {
+                            cart.Add(new Item { Product = _context.Products.Find(product.ProductId), Quantity = 1 });
+                        }
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                    }
+                    return RedirectToAction("Index", "Cart");
                 }
-               
-                return View(product);
+                return RedirectToAction("Index", "Cart");
             }
-            else
-            {
-                List<Item> cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
-                int index = isExist(id);
-                return View(product);
-            }
-    
+            return BadRequest();
         }
+
 
         // POST: Basket/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -178,17 +167,9 @@ namespace EPaper.Models
 
                 if (cart == null)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-
-                if (cart.Quantity <= 1)
-                {
-                    _context.Carts.Remove(cart);
-                }
-                else
-                {
-                    cart.Quantity = --cart.Quantity;
-                }
+                _context.Carts.Remove(cart);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -198,29 +179,76 @@ namespace EPaper.Models
                 int index = isExist(id);
                 if (index != -1)
                 {
-                    cart[index].Quantity--;
+                    cart.RemoveAt(index);
                 }
                 else
                 {
-                    cart.RemoveAt(index);
+                    return BadRequest();
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
                 return RedirectToAction("Index");
             }
-            
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateQuantity([Bind("Quantity,Id")]Cart cart, int id, int quantity)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (ModelState.IsValid)
+                {
+                    var cartFromDb = _context.Carts.Find(cart.Id);
+                    cartFromDb.Quantity = cart.Quantity;
+                    _context.Carts.Update(cartFromDb);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                return BadRequest();
+            }
+            else
+            {
+                List<Item> sessionCart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+                int index = isExist(id);
+                if (index != -1)
+                {
+                    sessionCart[index].Quantity = quantity;
+                }
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", sessionCart);
+                return RedirectToAction("Index");
+            }     
         }
 
         // GET : /CheckOut
+        [Authorize]
         public IActionResult CheckOut()
         {
-            if (User.Identity.IsAuthenticated)
+            CartViewModel cartModel = new CartViewModel();
+            var userId = GetUserId();
 
+            cartModel.Carts = _context.Carts
+                   .Include(p => p.Product)
+                   .Where(c => c.UserId == userId && c.OrderId == null)
+                   .ToList();
 
+            cartModel.Carts = FromSessionCartToUserCart(cartModel.Carts);
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
+            cartModel.UnavailableProducts = Helper.GetUnavailableProducts(_context, cartModel.Carts);
+
+            if (cartModel.UnavailableProducts.Count > 0 && cartModel.Carts.Count > 0)
+                cartModel.EnablePopUpWarning = true;
+            else
             {
-                return RedirectToAction("Create", "Payment");
+                cartModel.EnablePopUpWarning = false;
+                foreach (var item in cartModel.Carts)
+                    _context.Update(item);
 
+                _context.SaveChanges();
+                double total = CountTotal(cartModel.Carts);
+
+                return View("~/Views/Payment/Create.cshtml");
             }
-            return NotFound();
+            return RedirectToAction("Index", cartModel);
         }
 
         private string GetUserId()
@@ -249,6 +277,53 @@ namespace EPaper.Models
                 }
             }
             return -1;
+        }
+
+        private List<Cart> FromSessionCartToUserCart(List<Cart> carts)
+        {
+            List<Item> sessionCart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+            if (sessionCart != null)
+            {
+
+                foreach (var item in sessionCart)
+                {
+                    Cart cart = ProductIsInCart(item.Product.ProductId);
+                    if (cart == null)
+                    {
+                        carts.Add(new Cart
+                        {
+                            UserId = GetUserId(),
+                            Product = item.Product,
+                            Quantity = item.Quantity
+                        });
+                    }
+                    else
+                    {
+                        cart.Quantity += item.Quantity;
+                    }
+                }
+            }
+            return carts;
+        }
+
+        private double CountTotal(List<Cart> carts)
+        {
+            double total = 0;
+            foreach (var item in carts)
+            {
+                total += (item.Product.Price * item.Quantity);
+            }
+            return total;
+        }
+        private bool CheckIfProductAvailable(int id, int quantity)
+        {
+            Product product = _context.Products.Find(id);
+            if (product.Available >= quantity)
+            {
+               
+                return true;
+            }
+            return false;
         }
     }
 }

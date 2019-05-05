@@ -1,4 +1,4 @@
-﻿@model List<EPaper.Models.Cd>
+﻿@model EPaper.Models.CdViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -7,8 +7,82 @@
 <h2>CD - ΜΟΥΣΙΚΗ</h2>
 
 
-@foreach (var cd in Model)
-{
-    <h4>@cd.Name</h4>
-}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.cshtml">Home</a></li>
+                    <li class="breadcrumb-item"><a href="category.cshtml">Product</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">CD</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-3">
+            <div class="card bg-light mb-3">
+                <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-list"></i> CD</div>
+                <ul class="list-group category_block">
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li class="list-group-item"><a asp-controller="Cd" asp-action="Index" asp-route-category="@cat">@cat</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="row">
+                @foreach (var cd in Model.PaginatedCds())
+                {
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card">
+                            <img src="@cd.Product.Image" style="border-radius:5px; border:1px solid #bbb9b9;width:100% !important;" />
+                            <div class="card-body">
+                                <h4 class="card-title"><a href="product.cshtml" title="View Product">@cd.Product.Name</a></h4>
+                                <p class="card-text">@cd.Product.Description</p>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="btn btn-light btn-block">@(cd.Product.Price + " $")</p>
+                                    </div>
+                                    <div class="col">
+                                        <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@cd.ProductId">
+
+                                            <a asp-action="Details" asp-controller="Cd" class="btn btn-success -right btn-outline-info" asp-route-id="@cd.Product.ProductId">View Details</a>
+                                            <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col-12">
+        <nav aria-label="...">
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.PageCount(); i++)
+                {
+
+                    <li class="@(i == Model.CurrentPage ? "page-item active" : "page-item")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i,category = Model.CurrentCategory })">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
 

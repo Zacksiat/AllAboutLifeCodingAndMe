@@ -1,111 +1,89 @@
 ﻿
 @model EPaper.Models.Book
-@*
-@using EPaper.Extensions
-    *@
+@{
+    ViewData["Title"] = "Details";
+}
 
 
 <br />
 <h2 class="text-info">Book Details</h2>
 
-<div class="p-4 border rounded row">
-
-
-    <div class="col-8">
-        <div class="form-group row">
-            <div class="col-4">
-                <label asp-for="Name"></label>
-            </div>
-            <div class="col-8">
-                <input asp-for="Name" readonly class="form-control" />
-            </div>
-
-        </div>
-        <div class="form-group row">
-            <div class="col-2">
-                <label asp-for="Category"></label>
-            </div>
-            <div class="col-5">
-                <input asp-for="Category" class="form-control" />
-            </div>
-
-        </div>
-
-        <div class="form-group row">
-            <div class="col-4">
-                <label asp-for="Price"></label>
-            </div>
-            <div class="col-8">
-                <input asp-for="Price" readonly class="form-control" />
-            </div>
-
-        </div>
-
-        <div class="form-group row">
-            <div class="col-2">
-                <label asp-for="Author"></label>
-            </div>
-            <div class="col-5">
-                <input asp-for="Author" class="form-control" />
-            </div>
-
-        </div>
-
-        <div class="form-group row">
-            <div class="col-2">
-                <label asp-for="Publisher"></label>
-            </div>
-            <div class="col-5">
-                <input asp-for="Publisher" class="form-control" />
-            </div>
-          
-        </div>
-
-
-
-        @*Gia to ProductTypes *@
-        <div class="form-group row">
-            <div class="col-4">
-                <label asp-for="Product"></label>
-            </div>
-            <div class="col-8">
-                <input asp-for="Product.Name" readonly class="form-control" />
-            </div>
-        </div>
-
-       
-        <div class="form-group row">
-            <div class="col-4">
-                <label asp-for="Product.Stock"></label>
-            </div>
-            <div class="col-8">
-                <input type="checkbox" readonly class="form-control" asp-for="Product.Stock" />
-            </div>
-
-        </div>
-    </div>
-
-    <div class="col-1">
-
-    </div>
+<div id="profile-grid" class="p-4 border rounded row">
 
     @*Image*@
-    <div class="col-3">
-        <img src="Product.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9;" />
+    <div class="col-4 profile">
+        <div class="panel panel-default">
+            <div class="panel-thumbnail">
+                <a href="#" class="thumb">
+                    <img src="@Model.Product.Image" width="100%" style="border-radius:5px; border:1px solid #bbb9b9;" />
+                </a>
+            </div>
+        </div>
     </div>
 
+    <div class="col-8">
+        <p class="pro">@Model.Product.Name<span class="pros">@(Model.Product.Price + " $")</span></p>
+
+        <p class="pro">@Model.Product.Description</p>
+        <p class="pro">Category<span class="pros">@Model.Category</span></p>
+        <p class="pro">Author<span class="pros">@Model.Author</span></p>
+        <p class="pro">Publisher<span class="pros">@Model.Publisher</span></p>
+        <p class="pro">Pages<span class="pros">@Model.Pages</span></p>
+   
+        <div class="col-3">
+            <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@Model.ProductId">
+              
+                <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
+
+            </form>
+        </div>
+    </div>
+    <br />
     <br />
     <div class="form-group">
-        <a asp-action="Edit" class="btn btn-primary" asp-route-id="Product.ProductId">Edit</a>
-        <a asp-action="Index" class="btn btn-success">Back to List</a>
+        <a asp-action="Index" class="btn btn-success">Back to Books</a>
     </div>
 
 </div>
 
 
+<!-- .modal-profile -->
+<div class="modal fade modal-profile" tabindex="-1" role="dialog" aria-labelledby="modalProfile" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">×</button>
+                <h3 class="modal-title"></h3>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- //.modal-profile -->
 
 
 
 
 
+@section MyScripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            /* show lightbox when clicking a thumbnail */
+            $('a.thumb').click(function (event) {
+                event.preventDefault();
+                var content = $('.modal-body');
+                content.empty();
+                var title = $(this).attr("title");
+                $('.modal-title').html(title);
+                content.html($(this).html());
+                $(".modal-profile").modal({ show: true });
+            });
 
+        });
+    </script>
+}

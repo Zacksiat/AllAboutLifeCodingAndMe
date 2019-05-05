@@ -1,0 +1,30 @@
+﻿@model List<EPaper.Models.OrdersViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    <table class="table table-striped border">
+        <tr class="table-info">
+            <th>Payment Number</th>
+            <th>Product Name</th>
+            <th>Product Category</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@Html.DisplayFor(m => item.PaymentId)</td>
+            <td>@Html.DisplayFor(m => item.Name)</td>
+            <td>@Html.DisplayFor(m => item.Category)</td>
+            <td>@Html.DisplayFor(m => item.Quantity)</td>
+            <td>@Html.DisplayFor(m => item.Price)</td>
+            <td></td>
+        </tr>
+        }
+    </table>
+</div>
+

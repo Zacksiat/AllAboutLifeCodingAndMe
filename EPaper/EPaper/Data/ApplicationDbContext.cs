@@ -29,7 +29,7 @@ namespace EPaper.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
-        
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -56,26 +56,44 @@ namespace EPaper.Data
             });
 
 
-            builder.Entity<Cart>().HasOne(x => x.ApplicationUser)
-                .WithMany(c => c.Carts)
-                .HasForeignKey(x => x.UserId)
-                .IsRequired();
-            builder.Entity<Cart>().HasOne(x => x.Product);
-            builder.Entity<Cart>().HasOne(o => o.Order);
-            builder.Entity<Cart>().Property(x => x.Quantity).IsRequired();
-            builder.Entity<Cart>().HasKey(o => o.Id);
+            //builder.Entity<Cart>().HasOne(x => x.ApplicationUser)
+            //    .WithMany(c => c.Carts)
+            //    .HasForeignKey(x => x.UserId)
+            //    .IsRequired();
+            //builder.Entity<Cart>().HasOne(x => x.Product);
+            ////    builder.Entity<Cart>().HasOne(o => o.Order);
+            //builder.Entity<Cart>().Property(x => x.Quantity).IsRequired();
+            //builder.Entity<Cart>().HasKey(o => o.Id);
+           
 
+            builder.Entity<Cart>(entity =>
+            {
+                entity.HasOne(x => x.ApplicationUser)
+                      .WithMany(c => c.Carts)
+                      .HasForeignKey(p => p.UserId)
+                      .IsRequired();
+
+                entity.HasOne(x => x.Product);
+
+                entity.HasOne(o => o.Order)
+                      .WithMany(c => c.Carts)
+                      .HasForeignKey(o => o.OrderId);
+
+                entity.Property(x => x.Quantity).IsRequired();
+
+                entity.HasKey(c => c.Id);
+
+
+                      
+            });
+            
 
             builder.Entity<Order>(entity =>
             {
-                entity.HasOne(p => p.Payment)
-                     .WithOne(p => p.Order)
-                     .HasForeignKey<Payment>(o => o.Id);
-                // entity.HasKey(k => k.PaymentId);
-                entity.HasKey(p => p.PaymentId);
+
                 entity.HasOne(u => u.ApplicationUser)
                 .WithMany(o => o.Orders)
-                .HasForeignKey(u => u.ApplicationUserId)
+                .HasForeignKey(u => u.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -96,35 +114,27 @@ namespace EPaper.Data
             builder.Entity<Magazine>(entity =>
             {
                 entity.Property(m => m.Publisher).IsRequired();
-                entity.Ignore(m => m.TypeName)
-              .Ignore(m => m.Name)
-              .Ignore(m => m.Price);
+
             });
             builder.Entity<Cd>(entity =>
             {
                 entity.Property(c => c.Artist).IsRequired();
                 entity.Property(c => c.Label).IsRequired();
-                entity.Ignore(c => c.TypeName)
-              .Ignore(c => c.Name)
-              .Ignore(c => c.Price);
+
             });
+
 
             builder.Entity<Book>(entity =>
             {
+
                 entity.Property(b => b.Author).IsRequired();
                 entity.Property(b => b.Publisher).IsRequired();
-                entity.Ignore(b => b.TypeName)
-                .Ignore(b => b.Name)
-                .Ignore(b => b.Price);
             });
 
             builder.Entity<Comic>(entity =>
             {
                 entity.Property(b => b.Author).IsRequired();
                 entity.Property(b => b.Publisher).IsRequired();
-                entity.Ignore(b => b.TypeName)
-                .Ignore(b => b.Name)
-                .Ignore(b => b.Price);
             });
 
         }
@@ -148,7 +158,13 @@ namespace EPaper.Data
                     userManager.AddToRoleAsync(user, "Admin").Wait();
                 }
             }
+            else
+            {
+                ApplicationUser user = userManager.FindByEmailAsync("asdf@gmail.com").Result;
+                userManager.AddToRoleAsync(user, "Admin");
+            }
         }
     }
 }
+
 

@@ -25,10 +25,5 @@ namespace EPaper.Models
         public DateTime DatePublished { get; set; }
 
         public Product Product { get; set; }
-        public string TypeName { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public double Price { get; set; }
     }
 }

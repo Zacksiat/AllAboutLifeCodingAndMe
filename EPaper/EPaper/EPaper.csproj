@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images - Copy\**" />
+    <Content Remove="wwwroot\images - Copy\**" />
+    <EmbeddedResource Remove="wwwroot\images - Copy\**" />
+    <None Remove="wwwroot\images - Copy\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\images\epaper_logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />

@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - EPaper</title>
 
     <environment include="Development">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
         <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -19,7 +20,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Epaper</a>
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/epaper-logo.png" /></a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
 
@@ -47,7 +48,7 @@
             </ul>
         </div>
 
-        <a href="@Url.Action("Index", "Cart")" class="fa fa-cart-plus"></a>
+        <a href="@Url.Action("Index", "Cart")" class="fa fa-opencart fa-2x my-cart"></a>
 
         <div>
             <partial name="_LoginPartial" />
@@ -61,55 +62,61 @@
     <div class="body-content">
         @RenderBody()
 
-      
-        <div class="row footer-bg">
+
+        <div class="row footer-bg bg-dark">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-4">
-                        <h4>Top Categories</h4>
-                        <dd><a href="#">Books</a></dd>
-                        <dd><a href="#">Magazines</a></dd>
-                        <dd><a href="#">Comics</a></dd>
-                        <dd><a href="#">CDs</a></dd>
+                        <h4 class="my-red">Top Categories</h4>
+                        <dd><a asp-action="Index" asp-controller="Book">Books</a></dd>
+                        <dd><a asp-action="Index" asp-controller="Magazine">Magazines</a></dd>
+                        <dd><a asp-action="Index" asp-controller="Comic">Comics</a></dd>
+                        <dd><a asp-action="Index" asp-controller="Cd">CDs</a></dd>
                     </div>
                     <div class="col-sm-4">
-                        <h4>Shop</h4>
-                        <dd><i class="fa fa-map-marker"></i> Monday - Friday: 11:00 - 20:00</dd>
-                        <dd><i class="fa fa-location-arrow"></i> Aisxilou 7 Athens Greece</dd>
-                        <dd><i class="fa fa-phone"></i> 2101234567</dd>
-                        <dd><i class="fa fa fa-envelope"></i><a href="info@epaper.com"> info@epaper.com</a></dd>
+                        <h4 class="my-red">Shop</h4>
+                        <dd><i class="fa fa-map-marker my-red"></i> Monday - Friday: 11:00 - 20:00</dd>
+                        <dd><i class="fa fa-location-arrow my-red"></i> Aisxilou 7 Athens Greece</dd>
+                        <dd><i class="fa fa-phone my-red"></i> 2101234567</dd>
+                        <dd><i class="fa fa fa-envelope my-red"></i><a href="info@epaper.com"> info@epaper.com</a></dd>
                     </div>
                     <div class="col-sm-4">
-                        <h4>EPaper</h4>
-                        <dd><a href="https://localhost:44303/Home/About">About Us</a></dd>
-                        <dd><a href="https://localhost:44303/Home/Contact">Contact</a></dd>
+                        <h4 class="my-red">EPaper</h4>
+                        <dd><a asp-action="About" asp-controller="Home">About Us</a></dd>
+                        <dd><a asp-action="Contact" asp-controller="Home">Contact</a></dd>
                     </div>
                 </div>
             </div>
         </div>
 
 
-            <environment include="Development">
-                <script src="~/lib/jquery/dist/jquery.js"></script>
-                <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-                <script src="~/js/site.js" asp-append-version="true"></script>
-            </environment>
-            <environment exclude="Development">
-                <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                        asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                        asp-fallback-test="window.jQuery"
-                        crossorigin="anonymous"
-                        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-                </script>
-                <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
-                        asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                        asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                        crossorigin="anonymous"
-                        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
-                </script>
-                <script src="~/js/site.min.js" asp-append-version="true"></script>
-            </environment>
+        <environment include="Development">
+            <script src="~/lib/jquery/dist/jquery.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                    asp-fallback-test="window.jQuery"
+                    crossorigin="anonymous"
+                    integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+            </script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                    crossorigin="anonymous"
+                    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+            </script>
+            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        </environment>
 
-            @RenderSection("Scripts", required: false)
+        @RenderSection("MyScripts", required: false)
+        @RenderSection("Scripts", required: false)
+
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
 </body>
 </html>

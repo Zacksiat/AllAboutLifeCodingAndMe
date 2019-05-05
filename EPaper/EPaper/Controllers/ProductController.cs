@@ -16,20 +16,12 @@ namespace EPaper.Models
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
-        
-
 
         public ProductController(ApplicationDbContext context)
         {
             _context = context;
-          
+       
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         //////////////////////////ADMIN////////////////////////
         // GET: Product/Admin
         [Authorize(Roles = "Admin")]
@@ -38,23 +30,24 @@ namespace EPaper.Models
         {
 
             var applicationDbContext = _context.Products;
-                return View(await applicationDbContext.ToListAsync());
+            return View(await applicationDbContext.ToListAsync());
         }
 
+    
         // GET: Products/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             return View(product);
@@ -75,40 +68,6 @@ namespace EPaper.Models
             return RedirectToAction("AdminIndex");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-       
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            string type = product.Type;
-            switch (type)
-            {
-                case "Book":
-                    return RedirectToAction("Edit","Book",product);
-                case "Magazine":
-                    return RedirectToAction("Edit", "Magazine",product);
-                case "Cd":
-                    return RedirectToAction("Edit", "Cd",product);
-                default:
-                    return RedirectToAction("AdminIndex");
-
-            }
-
-            
-        }
     }
 }

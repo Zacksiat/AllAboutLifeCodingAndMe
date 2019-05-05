@@ -53,7 +53,11 @@ namespace EPaper.Models
         public async Task<IActionResult> RegisterRole([Bind("Users,Roles")]UserRoles UserRoles)
         {
             var user = _context.Users.Find(UserRoles.Users.Id);
-            var role = _context.Roles.Find(UserRoles.Roles.Id); ;
+            var role = _context.Roles.Find(UserRoles.Roles.Id);
+            // Remove Any previous roles before assigning new role
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, roles.ToArray());
+
             await _userManager.AddToRoleAsync(user,role.Name);
             return RedirectToAction("Index");
 

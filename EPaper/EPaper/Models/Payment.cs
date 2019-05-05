@@ -16,6 +16,5 @@ namespace EPaper.Models
         public string UserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
-        public Order Order { get; set; }
     }
 }

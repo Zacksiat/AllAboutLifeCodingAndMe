@@ -1,4 +1,4 @@
-﻿@model List<EPaper.Models.Magazine>
+﻿@model EPaper.Models.MagazineViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -6,9 +6,83 @@
 
 <h2>MAGAZINES - ΠΕΡΙΟΔΙΚΑ</h2>
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Home/Index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Magazines</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-3">
+            <div class="card bg-light mb-3">
+                <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-list"></i> Magazines</div>
+                <ul class="list-group category_block">
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li class="list-group-item"><a asp-controller="Magazine" asp-action="Index" asp-route-category="@cat">@cat</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
 
-@foreach (var mag in Model)
-{
-    <h4>@mag.Name</h4>
-}
+        <div class="col">
+            <div class="row">
+                @foreach (var mag in Model.PaginatedMagazines())
+                {
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card">
+                            <img src="@mag.Product.Image" style="border-radius:5px; border:1px solid #bbb9b9;width:100% !important;" />
+                            <div class="card-body">
+                                <h4 class="card-title"><a href="product.cshtml" title="View Product">@mag.Product.Name</a></h4>
+                                <p class="card-text">@mag.Product.Description</p>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="btn btn-light btn-block">@(mag.Product.Price + " $")</p>
+                                    </div>
+                                    <div class="col">
+                                        <form asp-action="AddtoCart" asp-controller="Cart" asp-route-id="@mag.ProductId">
+
+                                            <a asp-action="Details" asp-controller="Magazine" class="btn btn-success -right btn-outline-info" asp-route-id="@mag.Product.ProductId">View Details</a>
+
+
+                                            <input type="submit" value="Add to Cart" class="btn btn-danger btn-block"><i class="fa fa-cart-plus"></i>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col-12">
+        <nav aria-label="...">
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.PageCount(); i++)
+                {
+
+                    <li class="@(i == Model.CurrentPage ? "page-item active" : "page-item")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i,category = Model.CurrentCategory })">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
 

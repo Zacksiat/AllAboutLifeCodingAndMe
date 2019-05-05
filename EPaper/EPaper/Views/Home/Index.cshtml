@@ -1,21 +1,20 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div class="container">
+<div class="row">
     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img class="d-block w-100" src="http://ventureasheville.com/wp-content/uploads/2014/07/biblio-books-web1.jpg" width="1600" height="600" alt="Books">
-
+                <img src="~/images/book-slider.png" class="img-fluid">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="https://ichef.bbci.co.uk/news/624/cpsprodpb/4F30/production/_102927202_01b.jpg" width="1600" height="600" alt="Comics">
+                <img src="~/images/comics-slider.png" class="img-fluid">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="https://cached.imagescaler.hbpl.co.uk/resize/scaleWidth/743/cached.offlinehbpl.hbpl.co.uk/news/OMC/2F4C3957-E2B8-7872-B0E7FF468B357E0A.jpg" width="1600" height="600" alt="Magazines">
+                <img src="~/images/magazines-slider.png" class="img-fluid">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="https://assets.entrepreneur.com/content/3x2/2000/1411061238-why-japan-still-buying-music-cds.jpg" width="1600" height="600" alt="Cds">
+                <img src="~/images/slider-cd.jpg" class="img-fluid">
             </div>
         </div>
         <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -27,75 +26,124 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
+</div>
+
+<div class="container">
+
 
     <br />
     <br />
     <br />
     <div class="row">
-        <div class="col-6">
-            <img src="http://ventureasheville.com/wp-content/uploads/2014/07/biblio-books-web1.jpg" width="500" height="300" class="rounded" alt="...">
+        <div class="col-12 col-sm-6" data-aos="fade-right">
+            <img src="~/images/Books-home.jpg" class="rounded img-fluid">
         </div>
-        <div class="col-6">
+        <div class="col-12 col-sm-6" data-aos="fade-left">
             <h3 class="text-center">
-                Books
+                <a class="animated-arrow"
+                    href = "/book">
+                    <span class="the-arrow -left">
+                        <span class="shaft"></span>
+                    </span>
+                    <span class="main">
+                        <span class="text">
+                            Books
+                        </span>
+                        <span class="the-arrow -right">
+                            <span class="shaft"></span>
+                        </span>
+                    </span>
+                </a>
             </h3>
-
-            <p>
-
-            </p>
             <p class="text-center">
                 Here you can find the most spectacular books you ever searched for. You can Find about mythology, historical, romantic even encyclopedias.
-
             </p>
+            <div class="text-center w-100">
+                <button onclick="window.location.href='/book'" type="button" class="btn my-btn">All Books</button>
+            </div>
         </div>
     </div>
-    <p>
-
-    </p>
+    <br />
     <div class="row">
 
-        <div class="col-6">
+        <div class="col-12 col-sm-6" data-aos="flip-up">
             <h3 class="text-center">
-                Comics
+                <a class="animated-arrow"
+                   href="/comic">
+                    <span class="the-arrow -left">
+                        <span class="shaft"></span>
+                    </span>
+                    <span class="main">
+                        <span class="text">
+                            Comics
+                        </span>
+                        <span class="the-arrow -right">
+                            <span class="shaft"></span>
+                        </span>
+                    </span>
+                </a>
             </h3>
-
             <p class=text-lg-center>
                 Comics with aliens, comics with superheores, Mickey Mouse and Asterics are some of the categories of comics that you can find in Epaper.
             </p>
-
-
+            <div class="text-center w-100">
+                <button onclick="window.location.href='/comic'" type="button" class="btn my-btn">All Comics</button>
+            </div>
         </div>
-        <div class="col-6">
-            <img src="https://ichef.bbci.co.uk/news/624/cpsprodpb/4F30/production/_102927202_01b.jpg" width="500" height="300" class="rounded" alt="...">
+        <div class="col-12 col-sm-6" data-aos="flip-down">
+            <img src="~/images/Comic-home.jpg" class="rounded img-fluid">
         </div>
     </div>
 
+    <br />
     <div class="row">
-        <div class="col-6">
-            <img src="https://cached.imagescaler.hbpl.co.uk/resize/scaleWidth/743/cached.offlinehbpl.hbpl.co.uk/news/OMC/2F4C3957-E2B8-7872-B0E7FF468B357E0A.jpg" width="500" height="300" class="rounded" alt="...">
-        </div>
-        <div class="col-6">
+        <div class="col-12 col-sm-6" data-aos="zoom-in-down">
+            <img src="~/images/magazine-home.jpg" class="rounded img-fluid"></div>
+        <div class="col-12 col-sm-6" data-aos="zoom-in-up">
             <h3 class="text-center">
-                Magazines
+                <a class="animated-arrow"
+                   href="/magazine">
+                    <span class="the-arrow -left">
+                        <span class="shaft"></span>
+                    </span>
+                    <span class="main">
+                        <span class="text">
+                            Magazines
+                        </span>
+                        <span class="the-arrow -right">
+                            <span class="shaft"></span>
+                        </span>
+                    </span>
+                </a>
             </h3>
-
-            <p>
-
-            </p>
             <p class="text-center">
                 This section contains gossip, fashion and also magazines about animals and the nature.
             </p>
+            <div class="text-center w-100">
+                <button onclick="window.location.href='/magazine'" type="button" class="btn my-btn">All Magazines</button>
+            </div>
         </div>
     </div>
-    <p>
-
-    </p>
+    <br />
 
     <div class="row">
 
-        <div class="col-6">
+        <div class="col-12 col-sm-6" data-aos="fade-up" data-aos-duration="3000">
             <h3 class="text-center">
-                CDs
+                <a class="animated-arrow"
+                   href="/cd">
+                    <span class="the-arrow -left">
+                        <span class="shaft"></span>
+                    </span>
+                    <span class="main">
+                        <span class="text">
+                            Cd
+                        </span>
+                        <span class="the-arrow -right">
+                            <span class="shaft"></span>
+                        </span>
+                    </span>
+                </a>
             </h3>
             Jaz<br />
             Pop<br />
@@ -104,9 +152,12 @@
             <p>
                 Here are some of the categories that you can find in our eshop
             </p>
+            <div class="text-center w-100">
+                <button onclick="window.location.href='/cd'" type="button" class="btn my-btn">All Cds</button>
+            </div>
         </div>
-        <div class="col-6">
-            <img src="https://assets.entrepreneur.com/content/3x2/2000/1411061238-why-japan-still-buying-music-cds.jpg" width="500" height="300" class="rounded" alt="...">
+        <div class="col-12 col-sm-6" data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">
+            <img src="~/images/cd-home.jpg" class="rounded img-fluid">
         </div>
     </div>
-</div>
+</div>  

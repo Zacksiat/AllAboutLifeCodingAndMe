@@ -1,0 +1,34 @@
+﻿@model List<EPaper.Models.Cart>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<div>
+    <table class="table table-striped border">
+        <tr class="table-info">
+            <th>Order Number</th>
+            <th>User Name</th>
+            <th>Payment Method</th>
+            <th>Products Name</th>
+            <th>Products quantity</th>
+            <th>Total</th>
+
+            
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(m => item.OrderId)</td>
+                <td>@Html.DisplayFor(m => item.ApplicationUser.UserName)</td>
+                <td>@Html.DisplayFor(m=>item.Order.Payment.PaymentMethod)</td>
+                <td>@Html.DisplayFor(m => item.Product.Name)</td>
+                <td>@Html.DisplayFor(m => item.Quantity)</td>
+                <td>@Html.DisplayFor(m => item.Product.Price)</td>
+                <td></td>
+            </tr>
+        }
+    </table>
+</div>
+

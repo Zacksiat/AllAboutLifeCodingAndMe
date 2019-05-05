@@ -5,73 +5,93 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>AdminIndex</h2>
-<div class="dropdown">
-    
-    <ul class="navbar-nav mr-auto">
+<h2>Admin Page</h2>
+<br /> </br>
 
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown button
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
+@*
+    <div class="dropdown">
+
+        <ul class="navbar-nav mr-auto">
+
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown button
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
             </div>
+        </ul>
+    </div>
+*@
+
+
+@* <div class="col-6">
+        <h2 class="text-info">Product List</h2>
+    </div>*@
+<body>
+    <div class="row">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Products</button>
+                <div class="dropdown-menu">
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Book" asp-action="BookIndex">Books</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Cd" asp-action="CdIndex">Cds</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Magazine" asp-action="MagazineIndex">Magazines</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Comic" asp-action="ComicIndex">Comics</a></li>
+
+                </div>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with dropdown button">
         </div>
-    </ul>
-</div>
 
-<br/>
-<div>
-    <table class="table table-striped border">
-    <tr class="table-info">
+        
+    </div>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
+  
+    <br />
+    <div>
+        <table class="table table-striped border">
+            <tr class="table-info"></tr>
 
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(m => m.Stock)
-            </th>
-        </tr>
+            @*
+                <tbody>
+                    @foreach (var item in Model)
+
+                    {
+                        var conc = item.Price + "$";
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Type)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => conc)
+                            </td>
+
+
+
+
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> | |
+                                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a> |
+                                <a asp-action="AddtoCart" asp-controller="Basket" asp-route-id="@item.ProductId">Add to Cart</a>
+
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            *@
+              
+
+           
+        </table>
+    </div>
     
-    <tbody>
-        @foreach (var item in Model)
-
-        {
-            var conc = item.Price + "$";
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => conc)
-                </td>
-
-
-
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> | |
-                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a> |
-                    <a asp-action="AddtoCart" asp-controller="Basket" asp-route-id="@item.ProductId">Add to Cart</a>
-
-
-
-                </td>
-            </tr>
-        }
-    </tbody>
-   </table>
-</div>
+</body>
