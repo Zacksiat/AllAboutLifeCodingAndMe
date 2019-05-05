@@ -378,4 +378,10 @@ a:hover {
     #profile-grid .img-rounded {
         border-radius: 4px 4px 0 0;
     }
+
+.card img {
+    object-fit: cover;
+    object-position: left;
+    max-height: 173px;
+}
 /*image finish*/
